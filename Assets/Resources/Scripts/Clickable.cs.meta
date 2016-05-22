@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: c5b3ec7bd88ff674b8d995ed3be1a84c
+timeCreated: 1462269276
+licenseType: Free
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - Foutain: {fileID: 22449406, guid: 67ed0880f97d51c4ba1d428830959ca0, type: 2}
+  - Wall: {fileID: 22421236, guid: acf2093ae557db54e91ab5250fd5e24f, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
