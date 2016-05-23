@@ -34,6 +34,7 @@ public class Alien : MonoBehaviour {
 
     Clickable ignoreWallClickable;
 
+    Vector3 lastPosition;
     // public const float DeltaHeight = 14.5f;
 
     float bornTime = 0;
@@ -48,6 +49,7 @@ public class Alien : MonoBehaviour {
 
     public GameObject fChild;
     public GameObject childAnim;
+    public AlienParts alienParts;
 
     AlienLiveState currentLiveState = AlienLiveState.Born;
     AlienMovementState currentMovementState = AlienMovementState.Free;
@@ -105,12 +107,14 @@ public class Alien : MonoBehaviour {
 
 
         // if(currentMovementState.Equals(AlienMovementState.MoveToJump) || currentMovementState.Equals(AlienMovementState.MoveToPoint))
+
+        UpdateMovementDirection();
+
         GetPositionInClickable();
 
-        if (IsHungry())
-            speed = GameplayConstants.AlienHungrySpeed;
-        else
-            speed = GameplayConstants.AlienNormalSpeed;
+
+        UpdateSpeed();
+        
 
 
         SafeCupolInspection();
@@ -165,12 +169,33 @@ public class Alien : MonoBehaviour {
 
             if (currentMovementState.Equals(AlienMovementState.Charged) && (liveTime == GameplayConstants.AlienFullLiveTime || !currentClickable.FountainExist()))
             {
-                currentMovementState = AlienMovementState.Free;
+                SetMovementState( AlienMovementState.Free);
                 currentFountainTarget = null;
             }
         }
 
 
+    }
+
+    void UpdateMovementDirection()
+    {
+        if (transform.position.x > lastPosition.x)
+            alienParts.SetRight();
+        else if (transform.position.x < lastPosition.x)
+            alienParts.SetLeft();
+
+
+        lastPosition = transform.position;
+    }
+
+    void UpdateSpeed()
+    {
+        if (IsHungry())
+            speed = GameplayConstants.AlienHungrySpeed;
+        else
+            speed = GameplayConstants.AlienNormalSpeed;
+
+        alienParts.UpdateSpeed(speed);
     }
 
     void SafeCupolInspection()
@@ -213,7 +238,13 @@ public class Alien : MonoBehaviour {
             tempStartColor = new Color(1, 1, 0);
         }
 
-        childAnim.GetComponent<Image>().color = Color.Lerp(tempStartColor, targetColor, 1 - (tempLiveTime / (GameplayConstants.AlienFullLiveTime / 2f)));
+
+        foreach (Image img in alienParts.images)
+        {
+            img.color = Color.Lerp(tempStartColor, targetColor, 1 - (tempLiveTime / (GameplayConstants.AlienFullLiveTime / 2f))); ;
+        }
+
+        //childAnim.GetComponent<Image>().color = Color.Lerp(tempStartColor, targetColor, 1 - (tempLiveTime / (GameplayConstants.AlienFullLiveTime / 2f)));
     }
 
     public void StartBorn(Clickable clickable)
@@ -251,7 +282,8 @@ public class Alien : MonoBehaviour {
             yield return null;
         }
 
-        childAnim.GetComponent<Image>().color = startColor;
+        //  childAnim.GetComponent<Image>().color = startColor;
+
 
         library.aliens.GetComponent<AlienController>().AddAlien(this);
 
@@ -335,11 +367,11 @@ public class Alien : MonoBehaviour {
             {
                 // Debug.Log(lastTarget.num);
                 currentFountainTarget = null;//isFoundFountain = false;
-                currentMovementState = AlienMovementState.Charged;
+                SetMovementState(AlienMovementState.Charged);
             }
             else
             {
-                currentMovementState = AlienMovementState.Wait;
+                SetMovementState(AlienMovementState.Wait);
                 currentWaitCoroutine = StartCoroutine(WaitCoroutine());
             }
             return;
@@ -398,14 +430,14 @@ public class Alien : MonoBehaviour {
 
         while (pauseInCupol || pauseInBlackHole)
             yield return null;
-        
+
         currentWaitCoroutine = null;
-        currentMovementState = AlienMovementState.Free;
+        SetMovementState( AlienMovementState.Free);
     }
 
     IEnumerator JumpCoroutine(JumpDirection direction, Clickable clickable)
     {
-        currentMovementState = AlienMovementState.Jump;
+        SetMovementState(AlienMovementState.Jump);
         readyToJump = false;
 
 
@@ -419,7 +451,7 @@ public class Alien : MonoBehaviour {
         transform.position = childAnim.transform.position;
         transform.position = new Vector3(transform.position.x, transform.position.y - fChild.GetComponent<RectTransform>().anchoredPosition.y * library.canvas.scaleFactor, transform.position.z);
 
-  //      SetLastTarget(clickable);
+        //      SetLastTarget(clickable);
 
         currentFloor = clickable.GetFloor();
 
@@ -428,10 +460,10 @@ public class Alien : MonoBehaviour {
 
     IEnumerator ExpulsionAlien()
     {
-        currentMovementState = AlienMovementState.Expulsion;
+        SetMovementState(AlienMovementState.Expulsion);
         currentClickableExpulsion = currentClickable;
         RectTransform rt = GetComponent<RectTransform>();
-        Vector2 targetPosition = library.map.GetExpulsionTargetPosition(this,currentClickable);
+        Vector2 targetPosition = library.map.GetExpulsionTargetPosition(this, currentClickable);
         SetIgnoreWallClickable(currentClickable);
 
         while (Vector2.Distance(rt.position, targetPosition) > 1f)
@@ -439,17 +471,17 @@ public class Alien : MonoBehaviour {
             while (pauseInCupol || pauseInBlackHole)
                 yield return null;
 
-            rt.position =  Vector2.Lerp(rt.position, targetPosition, Time.deltaTime * 5);
+            rt.position = Vector2.Lerp(rt.position, targetPosition, Time.deltaTime * 5);
 
             yield return null;
         }
         currentClickableExpulsion = null;
-        currentMovementState = AlienMovementState.Free;
+        SetMovementState(AlienMovementState.Free);
     }
 
     IEnumerator PusherExpulsionAlienCoroutine()
     {
-        currentMovementState = AlienMovementState.Expulsion;
+        SetMovementState(AlienMovementState.Expulsion);
         currentClickableExpulsion = currentClickable;
         RectTransform rt = GetComponent<RectTransform>();
         Vector2 targetPosition = library.map.GetPusherExpulsionTargetPosition(this, currentClickable);
@@ -464,12 +496,12 @@ public class Alien : MonoBehaviour {
             yield return null;
         }
         currentClickableExpulsion = null;
-        currentMovementState = AlienMovementState.Free;
+        SetMovementState(AlienMovementState.Free);
     }
 
     public void PusherExpulsionAlien()
     {
-        if(currentMovableCoroutine != null)
+        if (currentMovableCoroutine != null)
             StopCoroutine(currentMovableCoroutine);
 
         if (currentWaitCoroutine != null)
@@ -481,22 +513,22 @@ public class Alien : MonoBehaviour {
 
     IEnumerator MoveToCoroutine(Clickable clickable)
     {
-        
+
         RectTransform rt = GetComponent<RectTransform>();
         //  RectTransform targetRt = null; 
 
         //   targetRt = clickable.GetComponent<RectTransform>();
 
-        bool isFinalTarget =false;
+        bool isFinalTarget = false;
         if (wayQueue.Count == 0)
         {
             isFinalTarget = true;
-            currentMovementState = AlienMovementState.MoveToPoint;
+            SetMovementState(AlienMovementState.MoveToPoint);
 
         }
         else
         {
-            currentMovementState = AlienMovementState.MoveToJump;
+            SetMovementState(AlienMovementState.MoveToJump);
         }
         Vector3 targetPosition = clickable.GetLocalPosition(isFinalTarget) /*- library.canvas.scaleFactor * new Vector3(0, DeltaHeight, 0)*/;
 
@@ -520,11 +552,11 @@ public class Alien : MonoBehaviour {
                 StopAllCoroutines();
             }
             else*/
-                rt.position = tempPosition;
-            
+            rt.position = tempPosition;
 
 
-                yield return null;
+
+            yield return null;
         }
         //  rt.position = targetPosition;
 
@@ -532,9 +564,9 @@ public class Alien : MonoBehaviour {
 
         if (currentMovementState.Equals(AlienMovementState.MoveToJump))
             readyToJump = true;
-        
+
         MoveToTarget();
-        
+
     }
 
     /*
@@ -575,7 +607,7 @@ public class Alien : MonoBehaviour {
 
     public bool AlienInWall()
     {
-        return currentClickable != null && currentClickable.IsWall() && AlienIn(library.buildings.wall) ;
+        return currentClickable != null && currentClickable.IsWall() && AlienIn(library.buildings.wall);
     }
 
 
@@ -587,7 +619,7 @@ public class Alien : MonoBehaviour {
     public bool AlienIn(RectTransform rt)
     {
         Vector2 alienPos = GetComponent<RectTransform>().position;
-        return  ((alienPos.x + childAnim.GetComponent<RectTransform>().rect.width / 2f * library.canvas.scaleFactor > currentClickable.transform.position.x - rt.rect.width / 2f * library.canvas.scaleFactor)
+        return ((alienPos.x + childAnim.GetComponent<RectTransform>().rect.width / 2f * library.canvas.scaleFactor > currentClickable.transform.position.x - rt.rect.width / 2f * library.canvas.scaleFactor)
                 && (alienPos.x - childAnim.GetComponent<RectTransform>().rect.width / 2f * library.canvas.scaleFactor < currentClickable.transform.position.x + rt.rect.width / 2f * library.canvas.scaleFactor)
                 && (alienPos.y - fChild.GetComponent<RectTransform>().anchoredPosition.y * library.canvas.scaleFactor + childAnim.GetComponent<RectTransform>().rect.height / 2f * library.canvas.scaleFactor > currentClickable.transform.position.y - rt.rect.height / 2f * library.canvas.scaleFactor)
                 && (alienPos.y - fChild.GetComponent<RectTransform>().anchoredPosition.y * library.canvas.scaleFactor - childAnim.GetComponent<RectTransform>().rect.height / 2f * library.canvas.scaleFactor < currentClickable.transform.position.y + rt.rect.height / 2f * library.canvas.scaleFactor));
@@ -659,10 +691,22 @@ public class Alien : MonoBehaviour {
 
     void UpdateIgnoreWall()
     {
-        if(ignoreWallClickable != null &&  !ignoreWallClickable.IsWall())
+        if (ignoreWallClickable != null && !ignoreWallClickable.IsWall())
         {
             ignoreWallClickable = null;
         }
     }
 
+
+    public void SetMovementState(AlienMovementState state)
+    {
+
+        if (state == AlienMovementState.MoveToJump || state == AlienMovementState.MoveToPoint)
+            alienParts.SetMove();
+
+        if (state == AlienMovementState.Free || state == AlienMovementState.Charged || state == AlienMovementState.Expulsion || state == AlienMovementState.Jump || state == AlienMovementState.Wait)
+            alienParts.SetStay();
+
+        currentMovementState = state;
+    }
 }
