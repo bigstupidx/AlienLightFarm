@@ -341,9 +341,9 @@ public class Clickable : MonoBehaviour {
         }
         else
         {
-            if (num == 0 || num == 14 || num == 17 || num == 18 || num == 21 || num == 33)
+            if (num == 0 || num == 14 || num == 17 || num == 18 || num == 21 || num == 33) 
             {
-                return transform.position + new Vector3(25f, 0f, 0f) * library.canvas.scaleFactor;
+                return transform.position + new Vector3(25, 0f, 0f) * library.canvas.scaleFactor;
             }
             else if (num == 9 || num == 10 || num == 13 || num == 22 || num == 25 || num == 26)
             {

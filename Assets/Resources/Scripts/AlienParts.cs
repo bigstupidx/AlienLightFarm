@@ -32,6 +32,18 @@ public class AlienParts : MonoBehaviour {
 
     }
 
+    public void SetJumpDown()
+    {
+        GetComponent<Animator>().speed = 1;
+        GetComponent<Animator>().SetInteger("AlienState",2);
+    }
+
+    public void SetJumpUp()
+    {
+        GetComponent<Animator>().speed = 1;
+        GetComponent<Animator>().SetInteger("AlienState",3);
+    }
+
     public void UpdateSpeed(float speed)
     {
         this.speed = speed;

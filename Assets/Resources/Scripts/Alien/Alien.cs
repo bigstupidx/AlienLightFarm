@@ -437,9 +437,8 @@ public class Alien : MonoBehaviour {
 
     IEnumerator JumpCoroutine(JumpDirection direction, Clickable clickable)
     {
-        SetMovementState(AlienMovementState.Jump);
+        SetMovementState(AlienMovementState.Jump, direction);
         readyToJump = false;
-
 
         switch (direction)
         {
@@ -448,6 +447,7 @@ public class Alien : MonoBehaviour {
             case JumpDirection.RightDown: yield return childAnim.GetComponent<Animator>().PlayAnimation(3); break;
             case JumpDirection.LeftDown: yield return childAnim.GetComponent<Animator>().PlayAnimation(4); break;
         }
+
         transform.position = childAnim.transform.position;
         transform.position = new Vector3(transform.position.x, transform.position.y - fChild.GetComponent<RectTransform>().anchoredPosition.y * library.canvas.scaleFactor, transform.position.z);
 
@@ -704,9 +704,29 @@ public class Alien : MonoBehaviour {
         if (state == AlienMovementState.MoveToJump || state == AlienMovementState.MoveToPoint)
             alienParts.SetMove();
 
-        if (state == AlienMovementState.Free || state == AlienMovementState.Charged || state == AlienMovementState.Expulsion || state == AlienMovementState.Jump || state == AlienMovementState.Wait)
+
+
+
+        if (state == AlienMovementState.Free || state == AlienMovementState.Charged || state == AlienMovementState.Expulsion  || state == AlienMovementState.Wait)
             alienParts.SetStay();
 
         currentMovementState = state;
+    }
+
+    public void SetMovementState(AlienMovementState state, JumpDirection direction)
+    {
+        if (state == AlienMovementState.Jump)
+        {
+            switch(direction)
+            {
+                case JumpDirection.LeftDown: alienParts.SetLeft(); alienParts.SetJumpDown(); break;
+                case JumpDirection.RightDown: alienParts.SetRight(); alienParts.SetJumpDown(); break;
+                case JumpDirection.LeftUp: alienParts.SetLeft(); alienParts.SetJumpUp(); break;
+                case JumpDirection.RightUp: alienParts.SetRight(); alienParts.SetJumpUp(); break;
+
+            }
+
+        }
+        SetMovementState(state);
     }
 }
