@@ -13,6 +13,7 @@ public class Clickable : MonoBehaviour {
         SafeCupol,
         BlackHole,
         Pusher,
+        Healing,
         Born
     }
 
@@ -29,6 +30,7 @@ public class Clickable : MonoBehaviour {
     Building currentCupol;
     Building currentBlackHole;
     Building currentPusher;
+    Building currentHealing;
 
     Color startColor;
 
@@ -108,6 +110,17 @@ public class Clickable : MonoBehaviour {
             currentPusher = null;
             library.map.LandWasChanged();
         }
+
+        if (currentHealing != null && currentHealing.IsDestroyed())
+        {
+            if (buildingType.Contains(BuildingType.Healing))
+            {
+                //  library.buildings.RemoveWall(currentCupol.gameObject.GetComponent<Wall>());
+                buildingType.Remove(BuildingType.Healing);
+            }
+            Destroy(currentHealing.gameObject);
+            currentHealing = null;
+        }
     }
 
     public GameObject BuildFountain()
@@ -150,6 +163,16 @@ public class Clickable : MonoBehaviour {
         return currentPusher.gameObject;
     }
 
+    public GameObject BuildHealing()
+    {
+        //  MoveAllAlienInClickable();
+        currentHealing = Build(BuildingType.Healing).GetComponent<Building>();
+
+        SetAliensToCurrentHealing();
+
+        return currentHealing.gameObject;
+    }
+
     GameObject Build(BuildingType bt)
     {     
         buildingType.Add(bt);
@@ -162,6 +185,7 @@ public class Clickable : MonoBehaviour {
             case BuildingType.Fountain: parentTransform = library.buildings.fountains;  break;
             case BuildingType.SafeCupol: parentTransform = library.buildings.safeCupols; break;
             case BuildingType.Pusher: parentTransform = library.buildings.pushers; break;
+            case BuildingType.Healing: parentTransform = library.buildings.healings; break;
             case BuildingType.Wall: parentTransform = library.buildings.walls; break;
             case BuildingType.BlackHole: parentTransform = library.buildings.blackHoles; break;
         }
@@ -222,7 +246,12 @@ public class Clickable : MonoBehaviour {
 
     public bool CanBuildPusher()
     {
-        return IsFree();
+        return !IsCupol() && !IsBlackHole() && !IsPusher();
+    }
+
+    public bool CanBuildHealing()
+    {
+        return true;
     }
 
     public bool IsBlackHole()
@@ -402,6 +431,14 @@ public class Clickable : MonoBehaviour {
         }
     }
 
+    void SetAliensToCurrentHealing()
+    {
+        foreach (Alien alien in library.aliens.GetComponent<AlienController>().GetAliensInCell(this))
+        {
+            ((Healing)currentHealing).AddAlien(alien);
+        }
+    }
+
     public void OnHighlight(BuildingType buildingType)
     {
         switch (buildingType)
@@ -433,6 +470,12 @@ public class Clickable : MonoBehaviour {
 
             case BuildingType.Pusher:
                 if (CanBuildPusher())
+                    SetOnHighlight();
+
+
+                break;
+            case BuildingType.Healing:
+                if (CanBuildHealing())
                     SetOnHighlight();
 
 

@@ -27,25 +27,33 @@ public class AlienController : MonoBehaviour {
 
         foreach (Alien alien in aliens)
         {
-            if(alien.GetLiveState().Equals(Alien.AlienLiveState.Die))
+            if (alien.GetLiveState().Equals(Alien.AlienLiveState.Die))
             {
                 RemoveAlien(alien);
                 return;
             }
 
             bool foutainIsFind = false;
-
-            if (!alien.GetMovementState().Equals(Alien.AlienMovementState.Charged) && !alien.GetMovementState().Equals(Alien.AlienMovementState.Jump))
+            if (alien.GetLiveState().Equals(Alien.AlienLiveState.Alive)
+                &&
+                (alien.GetMovementState().Equals(Alien.AlienMovementState.Free) 
+                || alien.GetMovementState().Equals(Alien.AlienMovementState.MoveToJump) 
+                || alien.GetMovementState().Equals(Alien.AlienMovementState.MoveToPoint) 
+                || alien.GetMovementState().Equals(Alien.AlienMovementState.Wait)))
             {
                 if (alien.IsHungry())
                 {
                     if (alien.GetCurrentFountainTarget() == null)
+                    {
                         foutainIsFind = AlienFindFountain(alien);
+                    }
                     else
+                    {
                         foutainIsFind = true;
+                    }
                 }
 
-                if (!foutainIsFind && !alien.GetLiveState().Equals(Alien.AlienLiveState.Born) && alien.GetMovementState().Equals(Alien.AlienMovementState.Free))
+                if (!foutainIsFind && alien.GetMovementState().Equals(Alien.AlienMovementState.Free))
                 {
                     AlienMoveTo(alien);
                 }
@@ -57,6 +65,7 @@ public class AlienController : MonoBehaviour {
 
     void BornAlien()
     {
+        
         if (!startBorningWasUsed)
         {
             startBorningWasUsed = true;
@@ -68,9 +77,9 @@ public class AlienController : MonoBehaviour {
         }
         else if (borningAliens.Count < 1 && IsBornDelay())
         {
-            
-             // if(io == 0)
-           //   {
+       /*     
+              if(io == 0)
+              {*/
             CreateAlien();
             // foreach(Clickable cl in library.map.GetWayToClickable(library.map.GetCell(9), library.map.GetCell(28)))
             //     {

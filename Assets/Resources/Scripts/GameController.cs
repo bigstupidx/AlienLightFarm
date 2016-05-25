@@ -16,7 +16,7 @@ public class GameController : MonoBehaviour {
         if (currentVal == GameplayConstants.MaxAgro)
             GameOver();
 
-        currentVal = Mathf.Max(0, currentVal - Time.deltaTime * GameplayConstants.RecoveryAgroCoef);
+        //currentVal = Mathf.Max(0, currentVal - Time.deltaTime * GameplayConstants.RecoveryAgroCoef);
 
         //library.bgController.UpdateColor(currentVal/ GameplayConstants.MaxAgro);
 
@@ -28,11 +28,28 @@ public class GameController : MonoBehaviour {
 
     public void DeathAlien()
     {
-        currentVal = Mathf.Min(GameplayConstants.MaxAgro, currentVal+ GameplayConstants.MaxAgro *GameplayConstants.AgroCoef/ library.aliens.GetComponent<AlienController>().GetAlienCount());
+        currentVal = Mathf.Min(GameplayConstants.MaxAgro, currentVal+ GameplayConstants.AgroCoef/*GetAgro()/* GameplayConstants.MaxAgro *GameplayConstants.AgroCoef/ library.aliens.GetComponent<AlienController>().GetAlienCount()*/);
     }
+
+    /*
+    float GetAgro()
+    {
+        int alienCount = library.aliens.GetComponent<AlienController>().GetAlienCount();
+
+        for(int i = GameplayConstants.AgroCoef.Length -1; i >= 0; i--)
+        {
+            if(alienCount >= GameplayConstants.AgroCoefAlienCountTreshold[i])
+            {
+                return GameplayConstants.AgroCoef[i];
+            }
+        }
+
+        return 100;
+       // GameplayConstants.MaxAgro* GameplayConstants.AgroCoef
+    }*/
 
     void GameOver()
     {
-       // Time.timeScale = 0;
+        Time.timeScale = 0;
     }
 }

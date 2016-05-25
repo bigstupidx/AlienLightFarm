@@ -13,5 +13,5 @@ public class Library : MonoBehaviour {
     public BgController bgController;
     public AgroLineController agroLineController;
     public GameController gameController;
-    public UILentaController uiLentaController;
+    public UIButtonsController uiButtonsController;
 }

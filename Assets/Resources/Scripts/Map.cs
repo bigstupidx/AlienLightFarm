@@ -564,9 +564,6 @@ public class Map : MonoBehaviour {
 
     Clickable GetRandomClickableOnFloorForExpulsion(Alien alien, Clickable currentClickable)
     {
-        
-
-
         List<Clickable> tempList = new List<Clickable>();
 
         for (int i = 0; i < cells.Length; i++)
@@ -574,7 +571,7 @@ public class Map : MonoBehaviour {
             if (cells[i].GetFloor() == currentClickable.GetFloor() && cells[i] != currentClickable && Mathf.Abs(cells[i].num - currentClickable.num) <= GameplayConstants.PusherRange)
             {
 
-                if ((IsExtremeForWallToLeft(cells[i]) || IsExtremeForWallToRight(cells[i]))
+                if ((IsExtremeForWallToLeft(currentClickable) || IsExtremeForWallToRight(currentClickable))
                     || (alien.transform.position.x <= currentClickable.transform.position.x && cells[i].num < currentClickable.num)
                     || (alien.transform.position.x > currentClickable.transform.position.x && cells[i].num > currentClickable.num))
                 {
@@ -598,7 +595,7 @@ public class Map : MonoBehaviour {
 
     public void OnHighlightAllActiveClickable()
     {
-        Clickable.BuildingType buildingType = library.uiLentaController.GetCurrentElementType();
+        Clickable.BuildingType buildingType = library.uiButtonsController.GetCurrentElementType();
 
         lightIsOn = true;
 

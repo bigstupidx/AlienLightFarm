@@ -88,7 +88,7 @@ public class Alien : MonoBehaviour {
 
         library = GameObject.FindObjectOfType<Library>();
 
-        startColor = new Color(0, Random.Range(0.4f, 1f), 1);
+        startColor = new Color(0, Random.Range(0.8f, 1f), 1);
 
     }
 
@@ -141,6 +141,7 @@ public class Alien : MonoBehaviour {
 
             UpdateColor();
 
+            /*
             if (AlienInWall() && !currentMovementState.Equals(AlienMovementState.Jump) && !currentLiveState.Equals(AlienLiveState.Born))
             {
                 if (currentMovementState.Equals(AlienMovementState.Expulsion))
@@ -156,7 +157,7 @@ public class Alien : MonoBehaviour {
                     StopAllCoroutines();
                     StartCoroutine(ExpulsionAlien());
                 }
-            }
+            }*/
 
 
             if (currentClickable != null && currentClickable.IsFountain() && currentMovementState.Equals(AlienMovementState.Charged))
@@ -175,6 +176,11 @@ public class Alien : MonoBehaviour {
         }
 
 
+    }
+
+    public void Healing()
+    {
+        liveTime = GameplayConstants.AlienFullLiveTime;
     }
 
     void UpdateMovementDirection()
@@ -203,10 +209,13 @@ public class Alien : MonoBehaviour {
         if (AlienInSafeCupol())
         {
             pauseInCupol = true;
+            alienParts.PauseOn();
         }
         else
         {
             pauseInCupol = false;
+            alienParts.PauseOff();
+
         }
     }
 
@@ -301,21 +310,18 @@ public class Alien : MonoBehaviour {
         return currentLiveState;
     }
 
+    /*
     public void SetTarget(Clickable clickable)
     {
         //  finalTarget = clickable;
         MoveToTarget();
 
-    }
-
+    }*/
+    /*
     [System.Obsolete("use SetFountainWayQueue")]
     public void SetFountainTarget(Clickable clickable)
     {
-        /*
-        Debug.Log("SetFountainTarget, CurrentState "+ currentMovementState);
-        Debug.Log("Clickable " + clickable);
-        Debug.Log("CurrentFountainTarget " + currentFountainTarget);
-        */
+      
 
         // Debug.Log("SetFountainTarget "+ clickable+" "+ currentFountainTarget);
         if (clickable != currentFountainTarget &&
@@ -336,7 +342,7 @@ public class Alien : MonoBehaviour {
             currentFountainTarget = clickable;
             SetTarget(clickable);
         }
-    }
+    }*/
 
     public void SetFountainWayQueue(Queue<Clickable> tempQueue)
     {
@@ -362,11 +368,10 @@ public class Alien : MonoBehaviour {
     {
         if (wayQueue.Count == 0)
         {
-            //    Debug.Log(currentFountainTarget);
             if (currentFountainTarget != null)
             {
-                // Debug.Log(lastTarget.num);
-                currentFountainTarget = null;//isFoundFountain = false;
+                
+                currentFountainTarget = null;
                 SetMovementState(AlienMovementState.Charged);
             }
             else
@@ -382,8 +387,12 @@ public class Alien : MonoBehaviour {
             StartCoroutine(JumpCoroutine(library.map.GetJumpDirection(currentClickable), library.map.GetClickableAfterJump(currentClickable)));
         }
         else
-            currentMovableCoroutine = StartCoroutine(MoveToCoroutine(wayQueue.Dequeue()));
+        {
+            if(currentMovableCoroutine != null)
+                StopCoroutine(currentMovableCoroutine);
 
+            currentMovableCoroutine = StartCoroutine(MoveToCoroutine(wayQueue.Dequeue()));
+        }
 
         /*
         //Debug.Log("LastTarget "+lastTarget.num +" ")
@@ -458,6 +467,7 @@ public class Alien : MonoBehaviour {
         MoveToTarget();
     }
 
+    /*
     IEnumerator ExpulsionAlien()
     {
         SetMovementState(AlienMovementState.Expulsion);
@@ -477,12 +487,14 @@ public class Alien : MonoBehaviour {
         }
         currentClickableExpulsion = null;
         SetMovementState(AlienMovementState.Free);
-    }
+    }*/
 
     IEnumerator PusherExpulsionAlienCoroutine()
     {
         SetMovementState(AlienMovementState.Expulsion);
         currentClickableExpulsion = currentClickable;
+        currentFountainTarget = null;
+
         RectTransform rt = GetComponent<RectTransform>();
         Vector2 targetPosition = library.map.GetPusherExpulsionTargetPosition(this, currentClickable);
 
@@ -644,6 +656,8 @@ public class Alien : MonoBehaviour {
     public void SetBlackHole()
     {
         pauseInBlackHole = true;
+        alienParts.PauseOn();
+
     }
 
 
@@ -702,9 +716,10 @@ public class Alien : MonoBehaviour {
     {
 
         if (state == AlienMovementState.MoveToJump || state == AlienMovementState.MoveToPoint)
+        {
             alienParts.SetMove();
 
-
+        }
 
 
         if (state == AlienMovementState.Free || state == AlienMovementState.Charged || state == AlienMovementState.Expulsion  || state == AlienMovementState.Wait)

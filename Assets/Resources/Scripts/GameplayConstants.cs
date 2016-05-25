@@ -3,7 +3,7 @@ using System.Collections;
 
 public class GameplayConstants {
 
-    public const float AlienFullLiveTime = 10f;
+    public const float AlienFullLiveTime = 11f;
     public const float AlienMaxWaitTime = 3f;
     public const float AlienMinWaitTime = 1f;
     public const float AlienNormalSpeed = 20f;
@@ -40,20 +40,23 @@ public class GameplayConstants {
     // public const float FountainCoefRestitution = 8f;
 
     public const int MaxAgro = 100;
-    public const float AgroCoef = 3f;
-    public const float RecoveryAgroCoef = 4f;
+    //  public static float[] AgroCoef = {60,40,25,20,15};
+    public static float AgroCoef = 10f;
+  //  public static int[] AgroCoefAlienCountTreshold = { 0, 10, 15, 20, 25 };
+    public const float RecoveryAgroCoef = 7f;
 
 
     public const int FountainTreshold = 0;
-    public const int WallTreshold = 90;
+    public const int WallTreshold = 1000000;
     public const int SafeCupolTreshold = 10;
-    public const int BlackHoleTreshold = 25;
+    public const int BlackHoleTreshold = 1000000;
     public const int PusherTreshold = 15;
+    public const int HealingTreshold = 25;
 
     public const int PusherRange = 3;
     public const float PusherExpansionSpeed = 5f;
 
     public const float ExpulsionAlienSpeed = 7f;
 
-    public const float LentaReloadTime = 3f;
+    public const float LentaReloadTime = 2f;
 }
