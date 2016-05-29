@@ -10,8 +10,13 @@ public class Library : MonoBehaviour {
     public Canvas canvas;
     public AlienCount alienCount;
     public Buildings buildings;
-    public BgController bgController;
+  //  public BgController bgController;
     public AgroLineController agroLineController;
     public GameController gameController;
     public UIButtonsController uiButtonsController;
+    public ScreenController screenController;
+
+    public Money money;
+    public AdController adController;
+    public BgController bgController;
 }

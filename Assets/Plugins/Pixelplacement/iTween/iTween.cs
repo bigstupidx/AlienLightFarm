@@ -4588,14 +4588,28 @@ public class iTween : MonoBehaviour{
 	
 	IEnumerator TweenDelay(){
 		delayStarted = Time.time;
-		yield return new WaitForSeconds (delay);
-		if(wasPaused){
+
+        if(!useRealTime)
+		    yield return new WaitForSeconds (delay);
+        else
+            yield return StartCoroutine(WaitForRealSeconds(delay));
+
+        if (wasPaused){
 			wasPaused=false;
 			TweenStart();	
 		}
-	}	
-	
-	void TweenStart(){		
+	}
+
+    public static IEnumerator WaitForRealSeconds(float time)
+    {
+        float start = Time.realtimeSinceStartup;
+        while (Time.realtimeSinceStartup < start + time)
+        {
+            yield return null;
+        }
+    }
+
+    void TweenStart(){		
 		CallBack("onstart");
 		
 		if(!loop){//only if this is not a loop
@@ -4619,8 +4633,12 @@ public class iTween : MonoBehaviour{
 	IEnumerator TweenRestart(){
 		if(delay > 0){
 			delayStarted = Time.time;
-			yield return new WaitForSeconds (delay);
-		}
+
+            if (!useRealTime)
+                yield return new WaitForSeconds(delay);
+            else
+                yield return StartCoroutine(WaitForRealSeconds(delay));
+        }
 		loop=true;
 		TweenStart();
 	}	
@@ -6912,6 +6930,8 @@ public class iTween : MonoBehaviour{
             useRealTime = Defaults.useRealTime;
         }
 
+        //Debug.Log(useRealTime);
+
 		//instantiates a cached ease equation reference:
 		GetEasingFunction();
 	}	
@@ -7049,28 +7069,44 @@ public class iTween : MonoBehaviour{
 	
 	        lastRealTime = Time.realtimeSinceStartup; // Added by PressPlay
 	}
-	
-	void CallBack(string callbackType){
-		if (tweenArguments.Contains(callbackType) && !tweenArguments.Contains("ischild")) {
-			//establish target:
-			GameObject target;
-			if (tweenArguments.Contains(callbackType+"target")) {
-				target=(GameObject)tweenArguments[callbackType+"target"];
-			}else{
-				target=gameObject;	
-			}
-			
-			//throw an error if a string wasn't passed for callback:
-			if (tweenArguments[callbackType].GetType() == typeof(System.String)) {
-				target.SendMessage((string)tweenArguments[callbackType],(object)tweenArguments[callbackType+"params"],SendMessageOptions.DontRequireReceiver);
-			}else{
-				Debug.LogError("iTween Error: Callback method references must be passed as a String!");
-				Destroy (this);
-			}
-		}
-	}
-	
-	void Dispose(){
+
+    void CallBack(string callbackType)
+    {
+        if (tweenArguments.Contains(callbackType) && !tweenArguments.Contains("ischild"))
+        {
+            //establish target:
+            GameObject target;
+            if (tweenArguments.Contains(callbackType + "target"))
+            {
+                target = (GameObject)tweenArguments[callbackType + "target"];
+            }
+            else
+            {
+                target = gameObject;
+            }
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            if (tweenArguments[callbackType] is Action<object>)
+            {
+                ((Action<object>)tweenArguments[callbackType]).Invoke((object)tweenArguments[callbackType + "params"]);
+            }
+            else
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            //throw an error if a string wasn't passed for callback:
+            if (tweenArguments[callbackType].GetType() == typeof(System.String))
+            {
+                target.SendMessage((string)tweenArguments[callbackType], (object)tweenArguments[callbackType + "params"], SendMessageOptions.DontRequireReceiver);
+            }
+            else
+            {
+                Debug.LogError("iTween Error: Callback method references must be passed as a String!");
+                Destroy(this);
+            }
+        }
+    }
+
+
+    void Dispose(){
 		for (int i = 0; i < tweens.Count; i++) {
 			Hashtable tweenEntry = tweens[i];
 			if ((string)tweenEntry["id"] == id){

@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: 5fd8c243c87c5a24ea9c376e469db4e0
-timeCreated: 1464004404
+timeCreated: 1464293295
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -81,14 +81,14 @@ TextureImporter:
         width: 65
         height: 84
       alignment: 9
-      pivot: {x: 0.6524552, y: 0.8693609}
+      pivot: {x: 0.68, y: 0.97}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline:
-      - - {x: -42.409576, y: 10.973679}
-        - {x: -42.409576, y: -73.02632}
-        - {x: 22.590424, y: -73.02632}
-        - {x: 22.590424, y: 5.9736786}
-        - {x: 16.590424, y: 10.973679}
+      - - {x: -44.200012, y: 2.519989}
+        - {x: -44.200012, y: -81.48001}
+        - {x: 20.799988, y: -81.48001}
+        - {x: 20.799988, y: -2.480011}
+        - {x: 14.799988, y: 2.519989}
     - name: alien_grey_3
       rect:
         serializedVersion: 2

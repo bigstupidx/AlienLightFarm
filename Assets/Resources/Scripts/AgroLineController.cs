@@ -9,7 +9,7 @@ public class AgroLineController : MonoBehaviour {
     Library library;
     // Use this for initialization
     float val;
-    void Start()
+    void Awake()
     {
         library = GameObject.FindObjectOfType<Library>();
     //    startColor = GetComponent<Image>().color;
@@ -36,6 +36,13 @@ public class AgroLineController : MonoBehaviour {
         rt.sizeDelta = new Vector2 (xVal, rt.sizeDelta.y);
 
         rt.anchoredPosition = new Vector2(-library.canvas.GetComponent<RectTransform>().sizeDelta.x / 2f + rt.sizeDelta.x / 2f, rt.anchoredPosition.y);
-
     }
+
+    public void Reset()
+    {
+        RectTransform rt = GetComponent<RectTransform>();
+        rt.sizeDelta = new Vector2(0, rt.sizeDelta.y);
+        rt.anchoredPosition = new Vector2(-library.canvas.GetComponent<RectTransform>().sizeDelta.x / 2f + rt.sizeDelta.x / 2f, rt.anchoredPosition.y);
+    }
+
 }

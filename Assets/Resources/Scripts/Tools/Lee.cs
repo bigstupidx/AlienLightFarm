@@ -60,7 +60,6 @@ public class Lee : MonoBehaviour
 
         if (len < 0)
         {
-            Debug.Log("Coord a " + ax + ":" + ay + " " +  "Coord b " + bx + ":" + by + " " + grid[by, bx]);
             len = 0;
         }
         Vector2[] vectArr = RecoveryWay(ax, ay, bx, by,len,grid);

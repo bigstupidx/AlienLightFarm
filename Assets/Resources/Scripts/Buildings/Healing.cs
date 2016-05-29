@@ -6,7 +6,7 @@ public class Healing : Building {
 
     public GameObject child;
     Library library;
-    void Start()
+    void Awake()
     {
         //  startColor = child.GetComponent<Image>().color;
         //finalColor = new Color(startColor.r, startColor.g, startColor.b, 0);

@@ -34,9 +34,14 @@ public class Clickable : MonoBehaviour {
 
     Color startColor;
 
-    void Start()
+    void Awake()
     {
         library = GameObject.FindObjectOfType<Library>();
+    }
+
+
+    void Start()
+    {
 
         if (num < 10)
             floor = 0;
@@ -46,9 +51,8 @@ public class Clickable : MonoBehaviour {
             floor = 2;
         else if (num < 34)
             floor = 3;
-
         startColor = GetComponent<Image>().color;
-        SetOffHighlight();
+        ToDefault();
     }
 
 
@@ -203,8 +207,8 @@ public class Clickable : MonoBehaviour {
         GameObject go = Instantiate(Resources.Load("Prefabs/Alien")) as GameObject;
         go.transform.SetParent(library.aliens.transform, false);
 
-        Vector3 tempPos = GetComponent<RectTransform>().position;
-
+        Vector3 tempPos = GetRandomPositionInClickable();
+        tempPos.z = 1;
         go.GetComponent<RectTransform>().position = tempPos;
 
      //   go.GetComponent<RectTransform>().anchoredPosition -= new Vector2(0, Alien.DeltaHeight);
@@ -279,7 +283,8 @@ public class Clickable : MonoBehaviour {
             && !buildingType.Contains(BuildingType.Fountain) 
             && !buildingType.Contains(BuildingType.SafeCupol) 
             && !buildingType.Contains(BuildingType.Wall)
-            && !buildingType.Contains(BuildingType.Pusher))
+            && !buildingType.Contains(BuildingType.Pusher)
+            && !buildingType.Contains(BuildingType.Healing))
             return true;
         else
             return false;
@@ -498,4 +503,34 @@ public class Clickable : MonoBehaviour {
         GetComponent<Image>().color = new Color(startColor.r, startColor.g, startColor.b, 0);
     }
 
+    public void ToDefault()
+    {
+        buildingType.Clear();
+
+        if (currentFountain != null)
+            Destroy(currentFountain.gameObject);
+
+        if (currentCupol != null)
+            Destroy(currentCupol.gameObject);
+
+        if (currentBlackHole != null)
+            Destroy(currentBlackHole.gameObject);
+
+        if (currentPusher != null)
+            Destroy(currentPusher.gameObject);
+
+        if (currentHealing != null)
+            Destroy(currentHealing.gameObject);
+
+     //   startColor = GetComponent<Image>().color;
+        SetOffHighlight();
+    }
+
+    public Vector2 GetRandomPositionInClickable()
+    {
+        RectTransform rt = GetComponent<RectTransform>();
+
+        float treshold = rt.rect.width * 0.8f * library.canvas.scaleFactor / 2f;
+        return GetComponent<RectTransform>().position;/* + new Vector3(Random.Range(-treshold, treshold),0,0);*/
+    }
 }

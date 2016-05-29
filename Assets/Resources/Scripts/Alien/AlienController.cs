@@ -12,8 +12,10 @@ public class AlienController : MonoBehaviour {
     Library library;
     int io = 0;
     bool startBorningWasUsed = false;
+
+    int iterator;
     // Use this for initialization
-	void Start () {
+	void Awake () {
         library = GameObject.FindObjectOfType<Library>();
 
 
@@ -23,29 +25,36 @@ public class AlienController : MonoBehaviour {
     void Update()
     {
         BornAlien();
-
-
-        foreach (Alien alien in aliens)
+        
+        int currentIterator = 0;
+        int startNum = iterator;
+        while(currentIterator <= 20)
         {
-            if (alien.GetLiveState().Equals(Alien.AlienLiveState.Die))
+            if (aliens.Count == 0)
+                break;
+
+
+            aliens[iterator].UpdateVal();
+
+            if (aliens[iterator].GetLiveState().Equals(Alien.AlienLiveState.Die))
             {
-                RemoveAlien(alien);
+                RemoveAlien(aliens[iterator]);
                 return;
             }
-
+            
             bool foutainIsFind = false;
-            if (alien.GetLiveState().Equals(Alien.AlienLiveState.Alive)
+            if (aliens[iterator].GetLiveState().Equals(Alien.AlienLiveState.Alive)
                 &&
-                (alien.GetMovementState().Equals(Alien.AlienMovementState.Free) 
-                || alien.GetMovementState().Equals(Alien.AlienMovementState.MoveToJump) 
-                || alien.GetMovementState().Equals(Alien.AlienMovementState.MoveToPoint) 
-                || alien.GetMovementState().Equals(Alien.AlienMovementState.Wait)))
+                (aliens[iterator].GetMovementState().Equals(Alien.AlienMovementState.Free) 
+                || aliens[iterator].GetMovementState().Equals(Alien.AlienMovementState.MoveToJump) 
+                || aliens[iterator].GetMovementState().Equals(Alien.AlienMovementState.MoveToPoint) 
+                || aliens[iterator].GetMovementState().Equals(Alien.AlienMovementState.Wait)))
             {
-                if (alien.IsHungry())
+                if (aliens[iterator].IsHungry())
                 {
-                    if (alien.GetCurrentFountainTarget() == null)
+                    if (aliens[iterator].GetCurrentFountainTarget() == null)
                     {
-                        foutainIsFind = AlienFindFountain(alien);
+                        foutainIsFind = AlienFindFountain(aliens[iterator]);
                     }
                     else
                     {
@@ -53,14 +62,24 @@ public class AlienController : MonoBehaviour {
                     }
                 }
 
-                if (!foutainIsFind && alien.GetMovementState().Equals(Alien.AlienMovementState.Free))
+                if (!foutainIsFind && aliens[iterator].GetMovementState().Equals(Alien.AlienMovementState.Free))
                 {
-                    AlienMoveTo(alien);
+                    AlienMoveTo(aliens[iterator]);
                 }
             }
-            
-            
+
+            iterator++;
+            currentIterator++;
+
+            if (iterator >= aliens.Count)
+                iterator = 0;
+            if (iterator == startNum)
+                break;
+
+
         }
+        
+       
     }
 
     void BornAlien()
@@ -292,4 +311,22 @@ public class AlienController : MonoBehaviour {
 
         return tempAliens;
     }
+
+
+    public void ToDefault()
+    {
+        foreach(Alien alien in aliens)
+            Destroy(alien.gameObject);
+        
+        aliens.Clear();
+
+        foreach (Alien alien in borningAliens)
+            Destroy(alien.gameObject);
+
+        borningAliens.Clear();
+        library.alienCount.SetCount(aliens.Count);
+        bornDelay = 0;
+        startBorningWasUsed = false;
+    }
+
 }

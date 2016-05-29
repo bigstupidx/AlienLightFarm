@@ -8,17 +8,13 @@ public class Map : MonoBehaviour {
 
     bool lightIsOn;
 
-    void Start()
+    void Awake()
     {
         library = GameObject.FindObjectOfType<Library>();
     }
 
-    // Update is called once per frame
-    void Update() {
 
-    }
-
-    public Clickable GetRandomFreeCellForBorn(/*Clickable[] excetions*/)
+    public Clickable GetRandomFreeCellForBorn(Clickable excetions)
     {
         Clickable cell = null;
 
@@ -34,13 +30,15 @@ public class Map : MonoBehaviour {
             }
 
             if(!isBusy)*/
-            tempArr.Add(i);
+            if (excetions == null || (excetions != null && excetions.num != i))
+                tempArr.Add(i);
         }
 
         do
         {
             if (tempArr.Count == 0)
-                break;
+                return cells[0];
+                
 
             int randomNum = Random.Range(0, tempArr.Count - 1);
             int num = tempArr[randomNum];
@@ -49,12 +47,15 @@ public class Map : MonoBehaviour {
 
             tempArr.RemoveAt(randomNum);
 
-        } while (!cell.IsFreeForBorn());
+        } while (!cell.IsFree()/*!cell.IsFreeForBorn()*/);
 
         return cell;
     }
 
-
+    public Clickable GetRandomFreeCellForBorn()
+    {
+        return GetRandomFreeCellForBorn(null);
+    }
 
     public Clickable GetRandomFreeCellToMove(Clickable clickable, List<Clickable> listClickable)
     {
@@ -617,5 +618,12 @@ public class Map : MonoBehaviour {
         if (lightIsOn)
             OnHighlightAllActiveClickable();
     }
-    
+
+    public void ToDefault()
+    {
+        lightIsOn = false;
+        foreach (Clickable cell in cells)
+            cell.ToDefault();
+    }
+
 }

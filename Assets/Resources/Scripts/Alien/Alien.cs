@@ -53,7 +53,7 @@ public class Alien : MonoBehaviour {
 
     AlienLiveState currentLiveState = AlienLiveState.Born;
     AlienMovementState currentMovementState = AlienMovementState.Free;
-    Color startColor;
+    Color32 startColor;
 
     float liveTime = GameplayConstants.AlienFullLiveTime;
 
@@ -83,63 +83,41 @@ public class Alien : MonoBehaviour {
     bool pauseInCupol;
     bool pauseInBlackHole;
 
+    int iterator = 0;
 
-    void Start() {
+    void Awake() {
 
         library = GameObject.FindObjectOfType<Library>();
 
-        startColor = new Color(0, Random.Range(0.8f, 1f), 1);
+        startColor = new Color(0,  Random.Range(0.8f, 1f), 1);
 
     }
 
     void Update()
     {
-        /*
-        if (fontainTimer != 0)
-        {
-            fontainTimer = Mathf.Max(fontainTimer - Time.deltaTime, 0);
-            if (fontainTimer == 0)
-                ignoreFountainClickable = null;
-        }*/
-
-
-
-
-
-        // if(currentMovementState.Equals(AlienMovementState.MoveToJump) || currentMovementState.Equals(AlienMovementState.MoveToPoint))
-
-        UpdateMovementDirection();
 
         GetPositionInClickable();
-
-
-        UpdateSpeed();
-        
-
-
-        SafeCupolInspection();
 
         if (!pauseInCupol && !pauseInBlackHole)
         {
             if (liveTime == 0)
             {
-                currentLiveState = AlienLiveState.Die;
-                return;
+                     currentLiveState = AlienLiveState.Die;
+                   return;
             }
 
             if (landWasChanged && currentMovementState != AlienMovementState.Charged && currentMovementState != AlienMovementState.Expulsion && currentMovementState != AlienMovementState.Jump)
             {
                 landWasChanged = false;
-                UpdateIgnoreWall();
+                //UpdateIgnoreWall();
                 FindFountain();
             }
 
             if (currentLiveState.Equals(AlienLiveState.Alive))
                 liveTime -= Time.deltaTime;
-
             liveTime = Mathf.Max(liveTime, 0);
 
-            UpdateColor();
+
 
             /*
             if (AlienInWall() && !currentMovementState.Equals(AlienMovementState.Jump) && !currentLiveState.Equals(AlienLiveState.Born))
@@ -170,11 +148,25 @@ public class Alien : MonoBehaviour {
 
             if (currentMovementState.Equals(AlienMovementState.Charged) && (liveTime == GameplayConstants.AlienFullLiveTime || !currentClickable.FountainExist()))
             {
-                SetMovementState( AlienMovementState.Free);
+                SetMovementState(AlienMovementState.Free);
                 currentFountainTarget = null;
             }
         }
+    }
 
+    public void UpdateVal()
+    {
+        iterator = (iterator + 1) % 11;
+
+        UpdateMovementDirection();
+
+
+        UpdateSpeed();
+
+        SafeCupolInspection();
+
+        if (iterator == 10)
+            UpdateColor();
 
     }
 
@@ -231,20 +223,20 @@ public class Alien : MonoBehaviour {
 
     void UpdateColor()
     {
-        Color targetColor;
-        Color tempStartColor;
+        Color32 targetColor;
+        Color32 tempStartColor;
         float tempLiveTime = 0;
         if (liveTime > GameplayConstants.AlienFullLiveTime / 2f)
         {
-            targetColor = new Color(1, 1, 0);
+            targetColor = new Color(1, 1, 0,1);
             tempLiveTime = liveTime - GameplayConstants.AlienFullLiveTime / 2f;
             tempStartColor = startColor;
         }
         else
         {
             tempLiveTime = liveTime;
-            targetColor = new Color(1, 0, 0);
-            tempStartColor = new Color(1, 1, 0);
+            targetColor = new Color(1, 0, 0,1);
+            tempStartColor = new Color(1, 1, 0,1);
         }
 
 
@@ -616,18 +608,18 @@ public class Alien : MonoBehaviour {
         lastTarget = clickable;
     }*/
 
-
+        /*
     public bool AlienInWall()
     {
         return currentClickable != null && currentClickable.IsWall() && AlienIn(library.buildings.wall);
-    }
+    }*/
 
 
     public bool AlienInSafeCupol()
     {
-        return currentClickable != null && currentClickable.IsSafeCupol() && AlienIn(library.buildings.safeCupol);
+        return currentClickable != null && currentClickable.IsSafeCupol() && !currentMovementState.Equals(AlienMovementState.Jump/* && AlienIn(library.buildings.safeCupol*/);
     }
-
+    /*
     public bool AlienIn(RectTransform rt)
     {
         Vector2 alienPos = GetComponent<RectTransform>().position;
@@ -635,7 +627,7 @@ public class Alien : MonoBehaviour {
                 && (alienPos.x - childAnim.GetComponent<RectTransform>().rect.width / 2f * library.canvas.scaleFactor < currentClickable.transform.position.x + rt.rect.width / 2f * library.canvas.scaleFactor)
                 && (alienPos.y - fChild.GetComponent<RectTransform>().anchoredPosition.y * library.canvas.scaleFactor + childAnim.GetComponent<RectTransform>().rect.height / 2f * library.canvas.scaleFactor > currentClickable.transform.position.y - rt.rect.height / 2f * library.canvas.scaleFactor)
                 && (alienPos.y - fChild.GetComponent<RectTransform>().anchoredPosition.y * library.canvas.scaleFactor - childAnim.GetComponent<RectTransform>().rect.height / 2f * library.canvas.scaleFactor < currentClickable.transform.position.y + rt.rect.height / 2f * library.canvas.scaleFactor));
-    }
+    }*/
 
     public void MoveAlienByWall()
     {/*
@@ -660,6 +652,14 @@ public class Alien : MonoBehaviour {
 
     }
 
+    public void SetUnBlackHole()
+    {
+        pauseInBlackHole = false;
+        alienParts.PauseOff();
+        currentFountainTarget = null;
+
+        SetMovementState(AlienMovementState.Free);
+    }
 
     public bool IsFountainTimeOut()
     {
@@ -694,7 +694,7 @@ public class Alien : MonoBehaviour {
 
     void FindFountain()
     {
-        if (currentFountainTarget != null)
+        if (IsHungry())
             library.aliens.GetComponent<AlienController>().AlienFindFountain(this);
     }
 

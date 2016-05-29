@@ -10,18 +10,25 @@ public class UIButtonsController : MonoBehaviour {
  //   public GameObject wallButton;
     public GameObject safeCupolButton;
    // public GameObject blackHoleButton;
-    public GameObject pusherButton;
     public GameObject healingButton;
 
+    public GameObject blackHoleButton;
+
+
     GameObject currentButton;
-    GameObject lastSelected;
     GameObject currentSelectObject;
     bool highlightIsOn;
     GameObject buttonForHighlight;
     // Use this for initialization
-    void Start() {
+    void Awake()
+    {
         library = GameObject.FindObjectOfType<Library>();
+    }
+
+
+    void Start() {
         SetCurrentButton(fountainButton);
+       // ToDefault();
     }
 
     // Update is called once per frame
@@ -48,15 +55,16 @@ public class UIButtonsController : MonoBehaviour {
                 {
                     BuildSafeCupol(currentSelectObject);
                 }
-                /*
+                
                 else if (currentButton.Equals(blackHoleButton))
                 {
                     BuildBlackHole(currentSelectObject);
-                }*/
+                }
+                /*
                 else if (currentButton.Equals(pusherButton))
                 {
                     BuildPusher(currentSelectObject);
-                }
+                }*/
                 else if (currentButton.Equals(healingButton))
                 {
                     BuildHealing(currentSelectObject);
@@ -111,13 +119,15 @@ public class UIButtonsController : MonoBehaviour {
             int treshold = 0;
 
             if (uiButton.gameObject.Equals(fountainButton))
-                treshold = GameplayConstants.FountainTreshold;
+                treshold = GameplayConstants.AliensTresholds[0];//GameplayConstants.FountainTreshold;
             else if (uiButton.gameObject.Equals(safeCupolButton))
-                treshold = GameplayConstants.SafeCupolTreshold;
-            else if (uiButton.gameObject.Equals(pusherButton))
-                treshold = GameplayConstants.PusherTreshold;
+                treshold = GameplayConstants.AliensTresholds[1]; //GameplayConstants.SafeCupolTreshold;
             else if (uiButton.gameObject.Equals(healingButton))
-                treshold = GameplayConstants.HealingTreshold;
+                treshold = GameplayConstants.AliensTresholds[2]; //GameplayConstants.PusherTreshold;
+            else if (uiButton.gameObject.Equals(blackHoleButton))
+                treshold = GameplayConstants.AliensTresholds[3];// GameplayConstants.HealingTreshold;
+     
+
 
             if (alienCount >= treshold)
                 uiButton.SetActive();
@@ -140,7 +150,7 @@ public class UIButtonsController : MonoBehaviour {
             highlightIsOn = false;
         }
 
-        if (!highlightIsOn  && !currentButton.GetComponent<UIButton>().IsReload() /*&& currentElement != null*/)
+        if (!highlightIsOn  && currentButton != null && !currentButton.GetComponent<UIButton>().IsReload() /*&& currentElement != null*/)
         {
             buttonForHighlight = currentButton;
 
@@ -196,7 +206,8 @@ public class UIButtonsController : MonoBehaviour {
 
         listUIButtons.Add(fountainButton.GetComponent<UIButton>());
         listUIButtons.Add(safeCupolButton.GetComponent<UIButton>());
-        listUIButtons.Add(pusherButton.GetComponent<UIButton>());
+        //  listUIButtons.Add(pusherButton.GetComponent<UIButton>());
+        listUIButtons.Add(blackHoleButton.GetComponent<UIButton>());
         listUIButtons.Add(healingButton.GetComponent<UIButton>());
 
         return listUIButtons;
@@ -223,7 +234,7 @@ public class UIButtonsController : MonoBehaviour {
     }
 
 
-
+    /*
     bool BuildWall(GameObject currentSelectObject)
     {
         Clickable clickable = currentSelectObject.GetComponent<Clickable>();
@@ -241,7 +252,7 @@ public class UIButtonsController : MonoBehaviour {
         else
             return false;
 
-    }
+    }*/
 
     bool BuildSafeCupol(GameObject currentSelectObject)
     {
@@ -251,23 +262,21 @@ public class UIButtonsController : MonoBehaviour {
             GameObject go = clickable.BuildSafeCupol();
             //library.buildings.AddSafeCupol(go.GetComponent<SafeCupol>());
             LandWasChanged();
-            currentButton.GetComponent<UIButton>().SetReload(2);
-
-
-            // currentButton.GetComponent<UIButton>().SetReload(GameplayConstants.WallButtonReloadTime);
+            currentButton.GetComponent<UIButton>().SetReload(GameplayConstants.SafeCupolButtonReloadTime);
             return true;
         }
         else
             return false;
     }
 
+    
     bool BuildBlackHole(GameObject currentSelectObject)
     {
         Clickable clickable = currentSelectObject.GetComponent<Clickable>();
         if (clickable.CanBuildBlackHole())
         {
             GameObject go = clickable.BuildBlackHole();
-            currentButton.GetComponent<UIButton>().SetReload(2);
+            currentButton.GetComponent<UIButton>().SetReload(GameplayConstants.BlackHoleButtonReloadTime);
 
             //library.buildings.AddSafeCupol(go.GetComponent<SafeCupol>());
 
@@ -277,14 +286,14 @@ public class UIButtonsController : MonoBehaviour {
         else
             return false;
     }
-
+    
     bool BuildHealing(GameObject currentSelectObject)
     {
         Clickable clickable = currentSelectObject.GetComponent<Clickable>();
         if (clickable.CanBuildHealing())
         {
             GameObject go = clickable.BuildHealing();
-            currentButton.GetComponent<UIButton>().SetReload(2);
+            currentButton.GetComponent<UIButton>().SetReload(GameplayConstants.HealingButtonReloadTime);
 
             //library.buildings.AddSafeCupol(go.GetComponent<SafeCupol>());
 
@@ -295,13 +304,14 @@ public class UIButtonsController : MonoBehaviour {
             return false;
     }
 
+    /*
     bool BuildPusher(GameObject currentSelectObject)
     {
         Clickable clickable = currentSelectObject.GetComponent<Clickable>();
         if (clickable.CanBuildPusher())
         {
             GameObject go = clickable.BuildPusher();
-            currentButton.GetComponent<UIButton>().SetReload(2);
+            currentButton.GetComponent<UIButton>().SetReload(GameplayConstants.PusherButtonReloadTime);
 
             //library.buildings.AddSafeCupol(go.GetComponent<SafeCupol>());
 
@@ -310,12 +320,19 @@ public class UIButtonsController : MonoBehaviour {
         }
         else
             return false;
-    }
+    }*/
 
     float GetReloadFountainTime()
     {
+        /*
         for(int i = GameplayConstants.FountainTresholdI.Length-1; i >= 0; i--)
             if(library.buildings.GetFountainCount() >= GameplayConstants.FountainTresholdI[i])
+            {
+                return GameplayConstants.FountainButtonReloadTime[i];
+            }*/
+
+        for (int i = GameplayConstants.AliensTresholds.Length - 1; i >= 0; i--)
+            if (library.aliens.GetComponent<AlienController>().GetAlienCount() >= GameplayConstants.AliensTresholds[i])
             {
                 return GameplayConstants.FountainButtonReloadTime[i];
             }
@@ -336,10 +353,10 @@ public class UIButtonsController : MonoBehaviour {
         else if (currentButton.Equals(safeCupolButton))
             buildType = Clickable.BuildingType.SafeCupol;
 
-       /* else if (currentButton.Equals(blackHoleButton))
-            buildType = Clickable.BuildingType.BlackHole;*/
-        else if (currentButton.Equals(pusherButton))
-            buildType = Clickable.BuildingType.Pusher;
+        else if (currentButton.Equals(blackHoleButton))
+            buildType = Clickable.BuildingType.BlackHole;
+        /*else if (currentButton.Equals(pusherButton))
+            buildType = Clickable.BuildingType.Pusher;*/
         else if (currentButton.Equals(healingButton))
             buildType = Clickable.BuildingType.Healing;
 
@@ -352,5 +369,22 @@ public class UIButtonsController : MonoBehaviour {
     {
         library.aliens.GetComponent<AlienController>().LandWasChanged();
         library.map.LandWasChanged();
+    }
+
+    public void ToDefault()
+    {
+        foreach(UIButton uiButton in  GetUIButtonList())
+        {
+            uiButton.ToDefault();
+        }
+
+        SetCurrentButton(fountainButton);
+
+
+        highlightIsOn = false;
+        buttonForHighlight = null;
+        currentSelectObject = null;
+
+        library.map.OnHighlightAllActiveClickable();
     }
 }

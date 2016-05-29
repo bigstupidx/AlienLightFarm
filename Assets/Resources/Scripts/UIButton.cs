@@ -13,10 +13,7 @@ public class UIButton : MonoBehaviour {
         ToDefault();
 	}
 	
-	// Update is called once per frame
-	void Update () {
 	
-	}
 
     public void SetReload(float time)
     {
@@ -83,11 +80,12 @@ public class UIButton : MonoBehaviour {
         else return false;
     }
 
-    void ToDefault()
+    public void ToDefault()
     {
+        StopAllCoroutines();
+        currentTime = 0;
         RectTransform rt = reloadImage.GetComponent<RectTransform>();
         rt.anchoredPosition = new Vector2(rt.anchoredPosition.x, rt.rect.height);
-
     }
 
 }

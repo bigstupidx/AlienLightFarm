@@ -43,7 +43,6 @@ public class AlienParts : MonoBehaviour {
 
     public void SetJumpUp()
     {
-
         GetComponent<Animator>().speed = 1;
         GetComponent<Animator>().SetInteger("AlienState",3);
     }
@@ -66,9 +65,6 @@ public class AlienParts : MonoBehaviour {
 
     public void PauseOff()
     {
-        //if (GetComponent<Animator>().GetInteger("AlienState").Equals(1))
-       //     GetComponent<Animator>().speed = moveSpeed / GameplayConstants.AlienNormalSpeed;
-      //  else
       if(speed != 0)
             GetComponent<Animator>().speed = this.speed;
     }
