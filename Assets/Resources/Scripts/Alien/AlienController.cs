@@ -211,14 +211,10 @@ public class AlienController : MonoBehaviour {
         }
         Clickable clickable = library.map.FindNearestFountain(alien, tempClickable);
 
-       // Debug.Log("Clickable num "+ clickable.num);
 
         if (clickable != null /*&& !alien.IsFountainTimeOut()*/)
         {
             Queue<Clickable> wayToClickable = library.map.GetWayToClickable(alien.GetCurrentClickable(), clickable);
-
-            // foreach(Clickable cl in wayToClickable)
-            //    Debug.Log(cl.num);
 
             if (pos != new Vector2(-1, -1))
                 Lee.startGrid[(int)pos.y, (int)pos.x] = Lee.BLANK;
@@ -327,6 +323,7 @@ public class AlienController : MonoBehaviour {
         library.alienCount.SetCount(aliens.Count);
         bornDelay = 0;
         startBorningWasUsed = false;
+        iterator = 0;
     }
 
 }

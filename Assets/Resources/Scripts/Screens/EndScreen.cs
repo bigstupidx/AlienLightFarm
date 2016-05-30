@@ -34,7 +34,7 @@ public class EndScreen : MonoBehaviour {
 
         bestScoreText.text = bestScore + "";
 
-        int currentMoney = (int) Mathf.Floor(aliensCount / 10);
+        int currentMoney = (int) Mathf.Floor(aliensCount / GameplayConstants.MoneyDevider);
 
         currentMoneyText.text = currentMoney +"";
 

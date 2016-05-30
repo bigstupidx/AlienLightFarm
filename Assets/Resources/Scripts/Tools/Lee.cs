@@ -67,7 +67,7 @@ public class Lee : MonoBehaviour
         
     }
 
-    public static Vector2[] GetPositionInArea(int ax, int ay, int len)
+    public static Vector2[] GetPositionInArea(int ax, int ay, int min, int len)
     {
         int[,] grid;
 
@@ -78,7 +78,7 @@ public class Lee : MonoBehaviour
         for(int j = 0; j < grid.GetLength(0); j++)
             for(int i = 0; i<grid.GetLength(1); i++)
             {
-                if (grid[j, i] > 0 && grid[j, i] <= len/* && !Has2AirBetween(j,i,ay,ax)/* && и между ними нет 2 air*/)
+                if (grid[j, i] > 0 && grid[j,i] >= min && grid[j, i] <= len/* && !Has2AirBetween(j,i,ay,ax)/* && и между ними нет 2 air*/)
                     vectList.Add(new Vector2(i,j));
             }
 

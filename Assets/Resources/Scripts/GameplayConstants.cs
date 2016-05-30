@@ -3,22 +3,28 @@ using System.Collections;
 
 public class GameplayConstants {
 
-    public const float AlienFullLiveTime = 11f;
+    public const float AlienFullLiveTime = 12f;
     public const float AlienMaxWaitTime = 3f;
     public const float AlienMinWaitTime = 1f;
     public const float AlienNormalSpeed = 30f;
     public const float AlienHungrySpeed = 60f;
+
+    public static int[] AlienClampDistance = { 5, 10, 20, 34 };
+    public const int AlienMinDistance = 2;
+
+    public const float AlienHungryCoef = 0.5f;
+
 
     public const int AlienStartBorningCount = 3;
 
 
     // Скорость появления алиенов
     public const float AlienBornTime = 2f;
-    public const float AlienBorningDelay = 0.9f;
+    public const float AlienBorningDelay = 1.4f;
 
 
 
-    public static float[] FountainButtonReloadTime = {2f,3f,4f,5f};
+    public static float[] FountainButtonReloadTime = {2.5f,3.5f,4.5f,5.5f};
     public const float SafeCupolButtonReloadTime = 3f;
     public static float HealingButtonReloadTime = 10f;
     //public static float PusherButtonReloadTime = 5f;
@@ -41,12 +47,12 @@ public class GameplayConstants {
 
     public const float BlackHoleClosedSpeed = 1f;
 
-    public const float AlienCoefRateFountain = 3f;
+    public const float AlienCoefRateFountain = 7f;
     // public const float FountainCoefRestitution = 8f;
 
     public const int MaxAgro = 100;
     //  public static float[] AgroCoef = {60,40,25,20,15};
-    public static float AgroCoef = 10f;
+    public static float AgroCoef = 20f;
   //  public static int[] AgroCoefAlienCountTreshold = { 0, 10, 15, 20, 25 };
     public const float RecoveryAgroCoef = 7f;
 
@@ -68,7 +74,9 @@ public class GameplayConstants {
     public const float LentaReloadTime = 2f;
 
     public const int AdMoneyReward = 20;
-    public const int PurchasePrice = 0;
+    public const int PurchasePrice = 200;
 
-    public static int[] OrderOpeningReward = {0, 1 }; 
+    public static int[] OrderOpeningReward = {0, 1 };
+
+    public const int MoneyDevider = 5;
 }

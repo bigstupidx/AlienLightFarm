@@ -88,7 +88,7 @@ public class Map : MonoBehaviour {
                 else
                 {*/
 
-         List<Clickable> tempArrCl = GetClickableInArea(clickable, Alien.ClampDistance[attempt]);
+         List<Clickable> tempArrCl = GetClickableInArea(clickable, GameplayConstants.AlienMinDistance, GameplayConstants.AlienClampDistance[attempt]);
        // Debug.Log(tempArrCl.Count);
 
         /* for (int i = minCell; i <= maxCell; i++)
@@ -117,7 +117,7 @@ public class Map : MonoBehaviour {
             */
         } while (!cell.IsFreeForMove());
 
-        if (cell == null && attempt < Alien.ClampDistance.Length-1)
+        if (cell == null && attempt < GameplayConstants.AlienClampDistance.Length-1)
             GetRandomFreeCellToMove(clickable, listClickable, ++attempt);
 
         return cell;
@@ -443,31 +443,22 @@ public class Map : MonoBehaviour {
   
     }
 
-    public List<Clickable> GetClickableInArea(Clickable currentClickable, int length)
+    public List<Clickable> GetClickableInArea(Clickable currentClickable, int min, int length)
     {
         Vector2 currentPosInMatrix = Lee.GetPosInMatrix(currentClickable.num, currentClickable.GetFloor());
-        Vector2[] vectArr = Lee.GetPositionInArea((int)currentPosInMatrix.x, (int)currentPosInMatrix.y, length);
-
-       // Debug.Log(vectArr.Length);
+        Vector2[] vectArr = Lee.GetPositionInArea((int)currentPosInMatrix.x, (int)currentPosInMatrix.y, min,length);
 
         List<Clickable> listClickable = new List<Clickable>();
 
         foreach (Vector2 vect in vectArr)
         {
             Clickable clickable = GetClickableByPosInMatrix(vect);
-            /*
-            if (clickable != null)
-            Debug.Log(vect+" "+clickable.num);
-            else
-                Debug.Log(vect + " " + "null");
-                */
 
             if (clickable!= null)
                 listClickable.Add(clickable);
         }
 
         return listClickable;
-
     }
 
 

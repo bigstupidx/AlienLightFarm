@@ -39,7 +39,6 @@ public class Alien : MonoBehaviour {
 
     float bornTime = 0;
 
-    public static int[] ClampDistance = { 5, 10, 20, 34 };
 
     int currentFloor;
 
@@ -226,10 +225,10 @@ public class Alien : MonoBehaviour {
         Color32 targetColor;
         Color32 tempStartColor;
         float tempLiveTime = 0;
-        if (liveTime > GameplayConstants.AlienFullLiveTime / 2f)
+        if (liveTime > GameplayConstants.AlienFullLiveTime *GameplayConstants.AlienHungryCoef)
         {
             targetColor = new Color(1, 1, 0,1);
-            tempLiveTime = liveTime - GameplayConstants.AlienFullLiveTime / 2f;
+            tempLiveTime = liveTime - GameplayConstants.AlienFullLiveTime * GameplayConstants.AlienHungryCoef;
             tempStartColor = startColor;
         }
         else
@@ -242,7 +241,7 @@ public class Alien : MonoBehaviour {
 
         foreach (Image img in alienParts.images)
         {
-            img.color = Color.Lerp(tempStartColor, targetColor, 1 - (tempLiveTime / (GameplayConstants.AlienFullLiveTime / 2f))); ;
+            img.color = Color.Lerp(tempStartColor, targetColor, 1 - (tempLiveTime / (GameplayConstants.AlienFullLiveTime * GameplayConstants.AlienHungryCoef))); ;
         }
 
         //childAnim.GetComponent<Image>().color = Color.Lerp(tempStartColor, targetColor, 1 - (tempLiveTime / (GameplayConstants.AlienFullLiveTime / 2f)));
@@ -587,7 +586,7 @@ public class Alien : MonoBehaviour {
 
     public bool IsHungry()
     {
-        if (liveTime < GameplayConstants.AlienFullLiveTime / 2f)
+        if (liveTime < GameplayConstants.AlienFullLiveTime * GameplayConstants.AlienHungryCoef)
             return true;
         else
             return false;
