@@ -12,8 +12,10 @@ public class AlienController : MonoBehaviour {
     Library library;
     int io = 0;
     bool startBorningWasUsed = false;
+
+    int iterator;
     // Use this for initialization
-	void Start () {
+	void Awake () {
         library = GameObject.FindObjectOfType<Library>();
 
 
@@ -23,40 +25,66 @@ public class AlienController : MonoBehaviour {
     void Update()
     {
         BornAlien();
-
-
-        foreach (Alien alien in aliens)
+        
+        int currentIterator = 0;
+        int startNum = iterator;
+        while(currentIterator <= 20)
         {
-            if(alien.GetLiveState().Equals(Alien.AlienLiveState.Die))
+            if (aliens.Count == 0)
+                break;
+
+
+            aliens[iterator].UpdateVal();
+
+            if (aliens[iterator].GetLiveState().Equals(Alien.AlienLiveState.Die))
             {
-                RemoveAlien(alien);
+                RemoveAlien(aliens[iterator]);
                 return;
             }
-
+            
             bool foutainIsFind = false;
-
-            if (!alien.GetMovementState().Equals(Alien.AlienMovementState.Charged) && !alien.GetMovementState().Equals(Alien.AlienMovementState.Jump))
+            if (aliens[iterator].GetLiveState().Equals(Alien.AlienLiveState.Alive)
+                &&
+                (aliens[iterator].GetMovementState().Equals(Alien.AlienMovementState.Free) 
+                || aliens[iterator].GetMovementState().Equals(Alien.AlienMovementState.MoveToJump) 
+                || aliens[iterator].GetMovementState().Equals(Alien.AlienMovementState.MoveToPoint) 
+                || aliens[iterator].GetMovementState().Equals(Alien.AlienMovementState.Wait)))
             {
-                if (alien.IsHungry())
+                if (aliens[iterator].IsHungry())
                 {
-                    if (alien.GetCurrentFountainTarget() == null)
-                        foutainIsFind = AlienFindFountain(alien);
+                    if (aliens[iterator].GetCurrentFountainTarget() == null)
+                    {
+                        foutainIsFind = AlienFindFountain(aliens[iterator]);
+                    }
                     else
+                    {
                         foutainIsFind = true;
+                    }
                 }
 
-                if (!foutainIsFind && !alien.GetLiveState().Equals(Alien.AlienLiveState.Born) && alien.GetMovementState().Equals(Alien.AlienMovementState.Free))
+                if (!foutainIsFind && aliens[iterator].GetMovementState().Equals(Alien.AlienMovementState.Free))
                 {
-                    AlienMoveTo(alien);
+                    AlienMoveTo(aliens[iterator]);
                 }
             }
-            
-            
+
+            iterator++;
+            currentIterator++;
+
+            if (iterator >= aliens.Count)
+                iterator = 0;
+            if (iterator == startNum)
+                break;
+
+
         }
+        
+       
     }
 
     void BornAlien()
     {
+        
         if (!startBorningWasUsed)
         {
             startBorningWasUsed = true;
@@ -68,9 +96,9 @@ public class AlienController : MonoBehaviour {
         }
         else if (borningAliens.Count < 1 && IsBornDelay())
         {
-            
-             // if(io == 0)
-           //   {
+       /*     
+              if(io == 0)
+              {*/
             CreateAlien();
             // foreach(Clickable cl in library.map.GetWayToClickable(library.map.GetCell(9), library.map.GetCell(28)))
             //     {
@@ -183,14 +211,10 @@ public class AlienController : MonoBehaviour {
         }
         Clickable clickable = library.map.FindNearestFountain(alien, tempClickable);
 
-       // Debug.Log("Clickable num "+ clickable.num);
 
         if (clickable != null /*&& !alien.IsFountainTimeOut()*/)
         {
             Queue<Clickable> wayToClickable = library.map.GetWayToClickable(alien.GetCurrentClickable(), clickable);
-
-            // foreach(Clickable cl in wayToClickable)
-            //    Debug.Log(cl.num);
 
             if (pos != new Vector2(-1, -1))
                 Lee.startGrid[(int)pos.y, (int)pos.x] = Lee.BLANK;
@@ -283,4 +307,23 @@ public class AlienController : MonoBehaviour {
 
         return tempAliens;
     }
+
+
+    public void ToDefault()
+    {
+        foreach(Alien alien in aliens)
+            Destroy(alien.gameObject);
+        
+        aliens.Clear();
+
+        foreach (Alien alien in borningAliens)
+            Destroy(alien.gameObject);
+
+        borningAliens.Clear();
+        library.alienCount.SetCount(aliens.Count);
+        bornDelay = 0;
+        startBorningWasUsed = false;
+        iterator = 0;
+    }
+
 }

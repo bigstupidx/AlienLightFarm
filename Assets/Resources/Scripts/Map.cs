@@ -8,17 +8,13 @@ public class Map : MonoBehaviour {
 
     bool lightIsOn;
 
-    void Start()
+    void Awake()
     {
         library = GameObject.FindObjectOfType<Library>();
     }
 
-    // Update is called once per frame
-    void Update() {
 
-    }
-
-    public Clickable GetRandomFreeCellForBorn(/*Clickable[] excetions*/)
+    public Clickable GetRandomFreeCellForBorn(Clickable excetions)
     {
         Clickable cell = null;
 
@@ -34,13 +30,15 @@ public class Map : MonoBehaviour {
             }
 
             if(!isBusy)*/
-            tempArr.Add(i);
+            if (excetions == null || (excetions != null && excetions.num != i))
+                tempArr.Add(i);
         }
 
         do
         {
             if (tempArr.Count == 0)
-                break;
+                return cells[0];
+                
 
             int randomNum = Random.Range(0, tempArr.Count - 1);
             int num = tempArr[randomNum];
@@ -49,12 +47,15 @@ public class Map : MonoBehaviour {
 
             tempArr.RemoveAt(randomNum);
 
-        } while (!cell.IsFreeForBorn());
+        } while (!cell.IsFree()/*!cell.IsFreeForBorn()*/);
 
         return cell;
     }
 
-
+    public Clickable GetRandomFreeCellForBorn()
+    {
+        return GetRandomFreeCellForBorn(null);
+    }
 
     public Clickable GetRandomFreeCellToMove(Clickable clickable, List<Clickable> listClickable)
     {
@@ -87,7 +88,7 @@ public class Map : MonoBehaviour {
                 else
                 {*/
 
-         List<Clickable> tempArrCl = GetClickableInArea(clickable, Alien.ClampDistance[attempt]);
+         List<Clickable> tempArrCl = GetClickableInArea(clickable, GameplayConstants.AlienMinDistance, GameplayConstants.AlienClampDistance[attempt]);
        // Debug.Log(tempArrCl.Count);
 
         /* for (int i = minCell; i <= maxCell; i++)
@@ -116,7 +117,7 @@ public class Map : MonoBehaviour {
             */
         } while (!cell.IsFreeForMove());
 
-        if (cell == null && attempt < Alien.ClampDistance.Length-1)
+        if (cell == null && attempt < GameplayConstants.AlienClampDistance.Length-1)
             GetRandomFreeCellToMove(clickable, listClickable, ++attempt);
 
         return cell;
@@ -442,31 +443,22 @@ public class Map : MonoBehaviour {
   
     }
 
-    public List<Clickable> GetClickableInArea(Clickable currentClickable, int length)
+    public List<Clickable> GetClickableInArea(Clickable currentClickable, int min, int length)
     {
         Vector2 currentPosInMatrix = Lee.GetPosInMatrix(currentClickable.num, currentClickable.GetFloor());
-        Vector2[] vectArr = Lee.GetPositionInArea((int)currentPosInMatrix.x, (int)currentPosInMatrix.y, length);
-
-       // Debug.Log(vectArr.Length);
+        Vector2[] vectArr = Lee.GetPositionInArea((int)currentPosInMatrix.x, (int)currentPosInMatrix.y, min,length);
 
         List<Clickable> listClickable = new List<Clickable>();
 
         foreach (Vector2 vect in vectArr)
         {
             Clickable clickable = GetClickableByPosInMatrix(vect);
-            /*
-            if (clickable != null)
-            Debug.Log(vect+" "+clickable.num);
-            else
-                Debug.Log(vect + " " + "null");
-                */
 
             if (clickable!= null)
                 listClickable.Add(clickable);
         }
 
         return listClickable;
-
     }
 
 
@@ -564,9 +556,6 @@ public class Map : MonoBehaviour {
 
     Clickable GetRandomClickableOnFloorForExpulsion(Alien alien, Clickable currentClickable)
     {
-        
-
-
         List<Clickable> tempList = new List<Clickable>();
 
         for (int i = 0; i < cells.Length; i++)
@@ -574,7 +563,7 @@ public class Map : MonoBehaviour {
             if (cells[i].GetFloor() == currentClickable.GetFloor() && cells[i] != currentClickable && Mathf.Abs(cells[i].num - currentClickable.num) <= GameplayConstants.PusherRange)
             {
 
-                if ((IsExtremeForWallToLeft(cells[i]) || IsExtremeForWallToRight(cells[i]))
+                if ((IsExtremeForWallToLeft(currentClickable) || IsExtremeForWallToRight(currentClickable))
                     || (alien.transform.position.x <= currentClickable.transform.position.x && cells[i].num < currentClickable.num)
                     || (alien.transform.position.x > currentClickable.transform.position.x && cells[i].num > currentClickable.num))
                 {
@@ -598,7 +587,7 @@ public class Map : MonoBehaviour {
 
     public void OnHighlightAllActiveClickable()
     {
-        Clickable.BuildingType buildingType = library.uiLentaController.GetCurrentElementType();
+        Clickable.BuildingType buildingType = library.uiButtonsController.GetCurrentElementType();
 
         lightIsOn = true;
 
@@ -620,5 +609,12 @@ public class Map : MonoBehaviour {
         if (lightIsOn)
             OnHighlightAllActiveClickable();
     }
-    
+
+    public void ToDefault()
+    {
+        lightIsOn = false;
+        foreach (Clickable cell in cells)
+            cell.ToDefault();
+    }
+
 }

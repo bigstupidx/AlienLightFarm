@@ -16,16 +16,11 @@ public class Pusher : Building
     void Awake()
     {
         child.transform.localScale = Vector3.zero;
-    }
-
-
-    void Start()
-    {
-        //  startColor = child.GetComponent<Image>().color;
-        //finalColor = new Color(startColor.r, startColor.g, startColor.b, 0);
         library = GameObject.FindObjectOfType<Library>();
 
     }
+
+
 
 
     // Update is called once per frame

@@ -39,7 +39,6 @@ public class Alien : MonoBehaviour {
 
     float bornTime = 0;
 
-    public static int[] ClampDistance = { 5, 10, 20, 34 };
 
     int currentFloor;
 
@@ -53,7 +52,7 @@ public class Alien : MonoBehaviour {
 
     AlienLiveState currentLiveState = AlienLiveState.Born;
     AlienMovementState currentMovementState = AlienMovementState.Free;
-    Color startColor;
+    Color32 startColor;
 
     float liveTime = GameplayConstants.AlienFullLiveTime;
 
@@ -83,64 +82,43 @@ public class Alien : MonoBehaviour {
     bool pauseInCupol;
     bool pauseInBlackHole;
 
+    int iterator = 0;
 
-    void Start() {
+    void Awake() {
 
         library = GameObject.FindObjectOfType<Library>();
 
-        startColor = new Color(0, Random.Range(0.4f, 1f), 1);
+        startColor = new Color(0,  Random.Range(0.8f, 1f), 1);
 
     }
 
     void Update()
     {
-        /*
-        if (fontainTimer != 0)
-        {
-            fontainTimer = Mathf.Max(fontainTimer - Time.deltaTime, 0);
-            if (fontainTimer == 0)
-                ignoreFountainClickable = null;
-        }*/
-
-
-
-
-
-        // if(currentMovementState.Equals(AlienMovementState.MoveToJump) || currentMovementState.Equals(AlienMovementState.MoveToPoint))
-
-        UpdateMovementDirection();
 
         GetPositionInClickable();
-
-
-        UpdateSpeed();
-        
-
-
-        SafeCupolInspection();
 
         if (!pauseInCupol && !pauseInBlackHole)
         {
             if (liveTime == 0)
             {
-                currentLiveState = AlienLiveState.Die;
-                return;
+                     currentLiveState = AlienLiveState.Die;
+                   return;
             }
 
             if (landWasChanged && currentMovementState != AlienMovementState.Charged && currentMovementState != AlienMovementState.Expulsion && currentMovementState != AlienMovementState.Jump)
             {
                 landWasChanged = false;
-                UpdateIgnoreWall();
+                //UpdateIgnoreWall();
                 FindFountain();
             }
 
             if (currentLiveState.Equals(AlienLiveState.Alive))
                 liveTime -= Time.deltaTime;
-
             liveTime = Mathf.Max(liveTime, 0);
 
-            UpdateColor();
 
+
+            /*
             if (AlienInWall() && !currentMovementState.Equals(AlienMovementState.Jump) && !currentLiveState.Equals(AlienLiveState.Born))
             {
                 if (currentMovementState.Equals(AlienMovementState.Expulsion))
@@ -156,7 +134,7 @@ public class Alien : MonoBehaviour {
                     StopAllCoroutines();
                     StartCoroutine(ExpulsionAlien());
                 }
-            }
+            }*/
 
 
             if (currentClickable != null && currentClickable.IsFountain() && currentMovementState.Equals(AlienMovementState.Charged))
@@ -169,12 +147,31 @@ public class Alien : MonoBehaviour {
 
             if (currentMovementState.Equals(AlienMovementState.Charged) && (liveTime == GameplayConstants.AlienFullLiveTime || !currentClickable.FountainExist()))
             {
-                SetMovementState( AlienMovementState.Free);
+                SetMovementState(AlienMovementState.Free);
                 currentFountainTarget = null;
             }
         }
+    }
+
+    public void UpdateVal()
+    {
+        iterator = (iterator + 1) % 11;
+
+        UpdateMovementDirection();
 
 
+        UpdateSpeed();
+
+        SafeCupolInspection();
+
+        if (iterator == 10)
+            UpdateColor();
+
+    }
+
+    public void Healing()
+    {
+        liveTime = GameplayConstants.AlienFullLiveTime;
     }
 
     void UpdateMovementDirection()
@@ -203,10 +200,13 @@ public class Alien : MonoBehaviour {
         if (AlienInSafeCupol())
         {
             pauseInCupol = true;
+            alienParts.PauseOn();
         }
         else
         {
             pauseInCupol = false;
+            alienParts.PauseOff();
+
         }
     }
 
@@ -222,26 +222,26 @@ public class Alien : MonoBehaviour {
 
     void UpdateColor()
     {
-        Color targetColor;
-        Color tempStartColor;
+        Color32 targetColor;
+        Color32 tempStartColor;
         float tempLiveTime = 0;
-        if (liveTime > GameplayConstants.AlienFullLiveTime / 2f)
+        if (liveTime > GameplayConstants.AlienFullLiveTime *GameplayConstants.AlienHungryCoef)
         {
-            targetColor = new Color(1, 1, 0);
-            tempLiveTime = liveTime - GameplayConstants.AlienFullLiveTime / 2f;
+            targetColor = new Color(1, 1, 0,1);
+            tempLiveTime = liveTime - GameplayConstants.AlienFullLiveTime * GameplayConstants.AlienHungryCoef;
             tempStartColor = startColor;
         }
         else
         {
             tempLiveTime = liveTime;
-            targetColor = new Color(1, 0, 0);
-            tempStartColor = new Color(1, 1, 0);
+            targetColor = new Color(1, 0, 0,1);
+            tempStartColor = new Color(1, 1, 0,1);
         }
 
 
         foreach (Image img in alienParts.images)
         {
-            img.color = Color.Lerp(tempStartColor, targetColor, 1 - (tempLiveTime / (GameplayConstants.AlienFullLiveTime / 2f))); ;
+            img.color = Color.Lerp(tempStartColor, targetColor, 1 - (tempLiveTime / (GameplayConstants.AlienFullLiveTime * GameplayConstants.AlienHungryCoef))); ;
         }
 
         //childAnim.GetComponent<Image>().color = Color.Lerp(tempStartColor, targetColor, 1 - (tempLiveTime / (GameplayConstants.AlienFullLiveTime / 2f)));
@@ -301,21 +301,18 @@ public class Alien : MonoBehaviour {
         return currentLiveState;
     }
 
+    /*
     public void SetTarget(Clickable clickable)
     {
         //  finalTarget = clickable;
         MoveToTarget();
 
-    }
-
+    }*/
+    /*
     [System.Obsolete("use SetFountainWayQueue")]
     public void SetFountainTarget(Clickable clickable)
     {
-        /*
-        Debug.Log("SetFountainTarget, CurrentState "+ currentMovementState);
-        Debug.Log("Clickable " + clickable);
-        Debug.Log("CurrentFountainTarget " + currentFountainTarget);
-        */
+      
 
         // Debug.Log("SetFountainTarget "+ clickable+" "+ currentFountainTarget);
         if (clickable != currentFountainTarget &&
@@ -336,7 +333,7 @@ public class Alien : MonoBehaviour {
             currentFountainTarget = clickable;
             SetTarget(clickable);
         }
-    }
+    }*/
 
     public void SetFountainWayQueue(Queue<Clickable> tempQueue)
     {
@@ -362,11 +359,10 @@ public class Alien : MonoBehaviour {
     {
         if (wayQueue.Count == 0)
         {
-            //    Debug.Log(currentFountainTarget);
             if (currentFountainTarget != null)
             {
-                // Debug.Log(lastTarget.num);
-                currentFountainTarget = null;//isFoundFountain = false;
+                
+                currentFountainTarget = null;
                 SetMovementState(AlienMovementState.Charged);
             }
             else
@@ -382,8 +378,12 @@ public class Alien : MonoBehaviour {
             StartCoroutine(JumpCoroutine(library.map.GetJumpDirection(currentClickable), library.map.GetClickableAfterJump(currentClickable)));
         }
         else
-            currentMovableCoroutine = StartCoroutine(MoveToCoroutine(wayQueue.Dequeue()));
+        {
+            if(currentMovableCoroutine != null)
+                StopCoroutine(currentMovableCoroutine);
 
+            currentMovableCoroutine = StartCoroutine(MoveToCoroutine(wayQueue.Dequeue()));
+        }
 
         /*
         //Debug.Log("LastTarget "+lastTarget.num +" ")
@@ -437,9 +437,8 @@ public class Alien : MonoBehaviour {
 
     IEnumerator JumpCoroutine(JumpDirection direction, Clickable clickable)
     {
-        SetMovementState(AlienMovementState.Jump);
+        SetMovementState(AlienMovementState.Jump, direction);
         readyToJump = false;
-
 
         switch (direction)
         {
@@ -448,6 +447,7 @@ public class Alien : MonoBehaviour {
             case JumpDirection.RightDown: yield return childAnim.GetComponent<Animator>().PlayAnimation(3); break;
             case JumpDirection.LeftDown: yield return childAnim.GetComponent<Animator>().PlayAnimation(4); break;
         }
+
         transform.position = childAnim.transform.position;
         transform.position = new Vector3(transform.position.x, transform.position.y - fChild.GetComponent<RectTransform>().anchoredPosition.y * library.canvas.scaleFactor, transform.position.z);
 
@@ -458,6 +458,7 @@ public class Alien : MonoBehaviour {
         MoveToTarget();
     }
 
+    /*
     IEnumerator ExpulsionAlien()
     {
         SetMovementState(AlienMovementState.Expulsion);
@@ -477,12 +478,14 @@ public class Alien : MonoBehaviour {
         }
         currentClickableExpulsion = null;
         SetMovementState(AlienMovementState.Free);
-    }
+    }*/
 
     IEnumerator PusherExpulsionAlienCoroutine()
     {
         SetMovementState(AlienMovementState.Expulsion);
         currentClickableExpulsion = currentClickable;
+        currentFountainTarget = null;
+
         RectTransform rt = GetComponent<RectTransform>();
         Vector2 targetPosition = library.map.GetPusherExpulsionTargetPosition(this, currentClickable);
 
@@ -583,7 +586,7 @@ public class Alien : MonoBehaviour {
 
     public bool IsHungry()
     {
-        if (liveTime < GameplayConstants.AlienFullLiveTime / 2f)
+        if (liveTime < GameplayConstants.AlienFullLiveTime * GameplayConstants.AlienHungryCoef)
             return true;
         else
             return false;
@@ -604,18 +607,18 @@ public class Alien : MonoBehaviour {
         lastTarget = clickable;
     }*/
 
-
+        /*
     public bool AlienInWall()
     {
         return currentClickable != null && currentClickable.IsWall() && AlienIn(library.buildings.wall);
-    }
+    }*/
 
 
     public bool AlienInSafeCupol()
     {
-        return currentClickable != null && currentClickable.IsSafeCupol() && AlienIn(library.buildings.safeCupol);
+        return currentClickable != null && currentClickable.IsSafeCupol() && !currentMovementState.Equals(AlienMovementState.Jump/* && AlienIn(library.buildings.safeCupol*/);
     }
-
+    /*
     public bool AlienIn(RectTransform rt)
     {
         Vector2 alienPos = GetComponent<RectTransform>().position;
@@ -623,7 +626,7 @@ public class Alien : MonoBehaviour {
                 && (alienPos.x - childAnim.GetComponent<RectTransform>().rect.width / 2f * library.canvas.scaleFactor < currentClickable.transform.position.x + rt.rect.width / 2f * library.canvas.scaleFactor)
                 && (alienPos.y - fChild.GetComponent<RectTransform>().anchoredPosition.y * library.canvas.scaleFactor + childAnim.GetComponent<RectTransform>().rect.height / 2f * library.canvas.scaleFactor > currentClickable.transform.position.y - rt.rect.height / 2f * library.canvas.scaleFactor)
                 && (alienPos.y - fChild.GetComponent<RectTransform>().anchoredPosition.y * library.canvas.scaleFactor - childAnim.GetComponent<RectTransform>().rect.height / 2f * library.canvas.scaleFactor < currentClickable.transform.position.y + rt.rect.height / 2f * library.canvas.scaleFactor));
-    }
+    }*/
 
     public void MoveAlienByWall()
     {/*
@@ -644,8 +647,18 @@ public class Alien : MonoBehaviour {
     public void SetBlackHole()
     {
         pauseInBlackHole = true;
+        alienParts.PauseOn();
+
     }
 
+    public void SetUnBlackHole()
+    {
+        pauseInBlackHole = false;
+        alienParts.PauseOff();
+        currentFountainTarget = null;
+
+        SetMovementState(AlienMovementState.Free);
+    }
 
     public bool IsFountainTimeOut()
     {
@@ -680,7 +693,7 @@ public class Alien : MonoBehaviour {
 
     void FindFountain()
     {
-        if (currentFountainTarget != null)
+        if (IsHungry())
             library.aliens.GetComponent<AlienController>().AlienFindFountain(this);
     }
 
@@ -702,11 +715,32 @@ public class Alien : MonoBehaviour {
     {
 
         if (state == AlienMovementState.MoveToJump || state == AlienMovementState.MoveToPoint)
+        {
             alienParts.SetMove();
 
-        if (state == AlienMovementState.Free || state == AlienMovementState.Charged || state == AlienMovementState.Expulsion || state == AlienMovementState.Jump || state == AlienMovementState.Wait)
+        }
+
+
+        if (state == AlienMovementState.Free || state == AlienMovementState.Charged || state == AlienMovementState.Expulsion  || state == AlienMovementState.Wait)
             alienParts.SetStay();
 
         currentMovementState = state;
+    }
+
+    public void SetMovementState(AlienMovementState state, JumpDirection direction)
+    {
+        if (state == AlienMovementState.Jump)
+        {
+            switch(direction)
+            {
+                case JumpDirection.LeftDown: alienParts.SetLeft(); alienParts.SetJumpDown(); break;
+                case JumpDirection.RightDown: alienParts.SetRight(); alienParts.SetJumpDown(); break;
+                case JumpDirection.LeftUp: alienParts.SetLeft(); alienParts.SetJumpUp(); break;
+                case JumpDirection.RightUp: alienParts.SetRight(); alienParts.SetJumpUp(); break;
+
+            }
+
+        }
+        SetMovementState(state);
     }
 }

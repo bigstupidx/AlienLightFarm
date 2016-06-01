@@ -13,6 +13,7 @@ public class Clickable : MonoBehaviour {
         SafeCupol,
         BlackHole,
         Pusher,
+        Healing,
         Born
     }
 
@@ -29,12 +30,18 @@ public class Clickable : MonoBehaviour {
     Building currentCupol;
     Building currentBlackHole;
     Building currentPusher;
+    Building currentHealing;
 
     Color startColor;
 
-    void Start()
+    void Awake()
     {
         library = GameObject.FindObjectOfType<Library>();
+    }
+
+
+    void Start()
+    {
 
         if (num < 10)
             floor = 0;
@@ -44,9 +51,8 @@ public class Clickable : MonoBehaviour {
             floor = 2;
         else if (num < 34)
             floor = 3;
-
         startColor = GetComponent<Image>().color;
-        SetOffHighlight();
+        ToDefault();
     }
 
 
@@ -108,6 +114,17 @@ public class Clickable : MonoBehaviour {
             currentPusher = null;
             library.map.LandWasChanged();
         }
+
+        if (currentHealing != null && currentHealing.IsDestroyed())
+        {
+            if (buildingType.Contains(BuildingType.Healing))
+            {
+                //  library.buildings.RemoveWall(currentCupol.gameObject.GetComponent<Wall>());
+                buildingType.Remove(BuildingType.Healing);
+            }
+            Destroy(currentHealing.gameObject);
+            currentHealing = null;
+        }
     }
 
     public GameObject BuildFountain()
@@ -150,6 +167,16 @@ public class Clickable : MonoBehaviour {
         return currentPusher.gameObject;
     }
 
+    public GameObject BuildHealing()
+    {
+        //  MoveAllAlienInClickable();
+        currentHealing = Build(BuildingType.Healing).GetComponent<Building>();
+
+        SetAliensToCurrentHealing();
+
+        return currentHealing.gameObject;
+    }
+
     GameObject Build(BuildingType bt)
     {     
         buildingType.Add(bt);
@@ -162,6 +189,7 @@ public class Clickable : MonoBehaviour {
             case BuildingType.Fountain: parentTransform = library.buildings.fountains;  break;
             case BuildingType.SafeCupol: parentTransform = library.buildings.safeCupols; break;
             case BuildingType.Pusher: parentTransform = library.buildings.pushers; break;
+            case BuildingType.Healing: parentTransform = library.buildings.healings; break;
             case BuildingType.Wall: parentTransform = library.buildings.walls; break;
             case BuildingType.BlackHole: parentTransform = library.buildings.blackHoles; break;
         }
@@ -179,8 +207,8 @@ public class Clickable : MonoBehaviour {
         GameObject go = Instantiate(Resources.Load("Prefabs/Alien")) as GameObject;
         go.transform.SetParent(library.aliens.transform, false);
 
-        Vector3 tempPos = GetComponent<RectTransform>().position;
-
+        Vector3 tempPos = GetRandomPositionInClickable();
+        tempPos.z = 1;
         go.GetComponent<RectTransform>().position = tempPos;
 
      //   go.GetComponent<RectTransform>().anchoredPosition -= new Vector2(0, Alien.DeltaHeight);
@@ -222,7 +250,12 @@ public class Clickable : MonoBehaviour {
 
     public bool CanBuildPusher()
     {
-        return IsFree();
+        return !IsCupol() && !IsBlackHole() && !IsPusher();
+    }
+
+    public bool CanBuildHealing()
+    {
+        return true;
     }
 
     public bool IsBlackHole()
@@ -250,7 +283,8 @@ public class Clickable : MonoBehaviour {
             && !buildingType.Contains(BuildingType.Fountain) 
             && !buildingType.Contains(BuildingType.SafeCupol) 
             && !buildingType.Contains(BuildingType.Wall)
-            && !buildingType.Contains(BuildingType.Pusher))
+            && !buildingType.Contains(BuildingType.Pusher)
+            && !buildingType.Contains(BuildingType.Healing))
             return true;
         else
             return false;
@@ -341,9 +375,9 @@ public class Clickable : MonoBehaviour {
         }
         else
         {
-            if (num == 0 || num == 14 || num == 17 || num == 18 || num == 21 || num == 33)
+            if (num == 0 || num == 14 || num == 17 || num == 18 || num == 21 || num == 33) 
             {
-                return transform.position + new Vector3(25f, 0f, 0f) * library.canvas.scaleFactor;
+                return transform.position + new Vector3(25, 0f, 0f) * library.canvas.scaleFactor;
             }
             else if (num == 9 || num == 10 || num == 13 || num == 22 || num == 25 || num == 26)
             {
@@ -402,6 +436,14 @@ public class Clickable : MonoBehaviour {
         }
     }
 
+    void SetAliensToCurrentHealing()
+    {
+        foreach (Alien alien in library.aliens.GetComponent<AlienController>().GetAliensInCell(this))
+        {
+            ((Healing)currentHealing).AddAlien(alien);
+        }
+    }
+
     public void OnHighlight(BuildingType buildingType)
     {
         switch (buildingType)
@@ -437,6 +479,12 @@ public class Clickable : MonoBehaviour {
 
 
                 break;
+            case BuildingType.Healing:
+                if (CanBuildHealing())
+                    SetOnHighlight();
+
+
+                break;
         }
     }
 
@@ -455,4 +503,34 @@ public class Clickable : MonoBehaviour {
         GetComponent<Image>().color = new Color(startColor.r, startColor.g, startColor.b, 0);
     }
 
+    public void ToDefault()
+    {
+        buildingType.Clear();
+
+        if (currentFountain != null)
+            Destroy(currentFountain.gameObject);
+
+        if (currentCupol != null)
+            Destroy(currentCupol.gameObject);
+
+        if (currentBlackHole != null)
+            Destroy(currentBlackHole.gameObject);
+
+        if (currentPusher != null)
+            Destroy(currentPusher.gameObject);
+
+        if (currentHealing != null)
+            Destroy(currentHealing.gameObject);
+
+     //   startColor = GetComponent<Image>().color;
+        SetOffHighlight();
+    }
+
+    public Vector2 GetRandomPositionInClickable()
+    {
+        RectTransform rt = GetComponent<RectTransform>();
+
+        float treshold = rt.rect.width * 0.8f * library.canvas.scaleFactor / 2f;
+        return GetComponent<RectTransform>().position;/* + new Vector3(Random.Range(-treshold, treshold),0,0);*/
+    }
 }

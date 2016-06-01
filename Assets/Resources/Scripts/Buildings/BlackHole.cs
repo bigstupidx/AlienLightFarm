@@ -13,7 +13,7 @@ public class BlackHole : Building
     List<Alien> aliens = new List<Alien>();
     // Use this for initialization
     Library library;
-    void Start()
+    void Awake()
     {
         //  startColor = child.GetComponent<Image>().color;
         //finalColor = new Color(startColor.r, startColor.g, startColor.b, 0);
@@ -31,7 +31,7 @@ public class BlackHole : Building
 
             if(child.transform.localScale.x <= 0)
             {
-                RemoveAliens();
+                MoveAliens();
 
                 child.transform.localScale = Vector3.zero;
             }
@@ -47,11 +47,17 @@ public class BlackHole : Building
         alien.SetBlackHole();
     }
 
-    void RemoveAliens()
+    void MoveAliens()
     {
         foreach(Alien alien in aliens)
         {
-            library.aliens.GetComponent<AlienController>().RemoveFreeAlien(alien);
+            Clickable currentClickable = alien.GetCurrentClickable();
+            alien.transform.position = library.map.GetRandomFreeCellForBorn(currentClickable).GetRandomPositionInClickable();
+            alien.transform.SetParent(library.aliens.transform,true);
+            alien.transform.localScale = new Vector3(1, 1, 1);
+            alien.SetUnBlackHole();
+
+            // library.aliens.GetComponent<AlienController>().RemoveFreeAlien(alien);
         }
     }
 

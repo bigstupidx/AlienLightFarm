@@ -12,6 +12,7 @@ public class Buildings : MonoBehaviour {
     public Transform safeCupols;
     public Transform blackHoles;
     public Transform pushers;
+    public Transform healings;
 
 
     public int GetFountainCount()

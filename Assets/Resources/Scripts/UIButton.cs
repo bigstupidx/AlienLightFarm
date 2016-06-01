@@ -5,16 +5,15 @@ using System.Collections;
 public class UIButton : MonoBehaviour {
 
     public Image reloadImage;
-
-	// Use this for initialization
-	void Start () {
+    public Image border;
+    public Image block;
+    float currentTime;
+    // Use this for initialization
+    void Start () {
         ToDefault();
 	}
 	
-	// Update is called once per frame
-	void Update () {
 	
-	}
 
     public void SetReload(float time)
     {
@@ -24,13 +23,35 @@ public class UIButton : MonoBehaviour {
 
         RectTransform rt = reloadImage.GetComponent<RectTransform>();
         rt.anchoredPosition = new Vector2(rt.anchoredPosition.x, 0);
+    }
 
 
+
+    public void SetChecked()
+    {
+        border.gameObject.SetActive(true);
+    }
+
+    public void SetUnchecked()
+    {
+        border.gameObject.SetActive(false);
+    }
+
+    public void SetActive()
+    {
+        GetComponent<Button>().interactable = true;
+        block.gameObject.SetActive(false);
+    }
+
+    public void SetDeactive()
+    {
+        GetComponent<Button>().interactable = false;
+        block.gameObject.SetActive(true);
     }
 
     IEnumerator ReloadCoroutine(float time)
     {
-        float currentTime = time;
+        currentTime = time;
 
         RectTransform rt = reloadImage.GetComponent<RectTransform>();
         float maxHeight = rt.rect.height;
@@ -42,6 +63,8 @@ public class UIButton : MonoBehaviour {
             float currentPosY = (1-(currentTime/time)) * maxHeight;
             rt.anchoredPosition = new Vector2(rt.anchoredPosition.x, currentPosY);
 
+            if (currentTime < 0)
+                currentTime = 0;
             yield return null;
         }
 
@@ -50,11 +73,19 @@ public class UIButton : MonoBehaviour {
  //       GetComponent<Button>().interactable = true;
     }
 
-    void ToDefault()
+    public bool IsReload()
     {
+        if (currentTime > 0)
+            return true;
+        else return false;
+    }
+
+    public void ToDefault()
+    {
+        StopAllCoroutines();
+        currentTime = 0;
         RectTransform rt = reloadImage.GetComponent<RectTransform>();
         rt.anchoredPosition = new Vector2(rt.anchoredPosition.x, rt.rect.height);
-
     }
 
 }

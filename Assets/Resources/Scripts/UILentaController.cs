@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class UILentaController : MonoBehaviour
 {
-
+    /*
     Library library;
     public GameObject fountainButton;
     public GameObject wallButton;
@@ -20,7 +20,7 @@ public class UILentaController : MonoBehaviour
     public GameObject currentElementGO;
     public GameObject nextElementGO;
 
-    public Text time;
+   // public Text time;
 
     GameObject currentElement;
     GameObject nextElement;
@@ -39,19 +39,9 @@ public class UILentaController : MonoBehaviour
     {
         reloadTime = Mathf.Max(0, reloadTime - Time.deltaTime);
 
-
-        /*
-        if (reloadTime > 0)
-        {
-            time.text = Mathf.Ceil(reloadTime) + "";
-        }
-        else
-            time.text = "";
-     */
         UpdateCurrentAndNextElements();
 
         ActivateHighlight();
-
 
         if (currentElement != null && currentSelectObject != null && reloadTime == 0)
         {
@@ -109,6 +99,15 @@ public class UILentaController : MonoBehaviour
        // lastSelected = library.eventSystem.GetComponent<EventSystem>().currentSelectedGameObject;
     }
 
+    public void SetCurrentToNext()
+    {
+        if (reloadTime == 0)
+        {
+            ClearCurrentElement();
+            UpdateCurrentAndNextElements();
+        }
+    }
+
     void ActivateHighlight()
     {
         if (!hightlightIsOn && reloadTime == 0 && currentElement != null)
@@ -131,6 +130,15 @@ public class UILentaController : MonoBehaviour
 
         List<GameObject> children = new List<GameObject>();
         foreach (Transform child in currentElementGO.transform) children.Add(child.gameObject);
+        children.ForEach(child => Destroy(child));
+    }
+
+    void ClearNextElement()
+    {
+        nextElement = null;
+
+        List<GameObject> children = new List<GameObject>();
+        foreach (Transform child in nextElementGO.transform) children.Add(child.gameObject);
         children.ForEach(child => Destroy(child));
     }
     
@@ -248,14 +256,11 @@ public class UILentaController : MonoBehaviour
 
         if (nextElement == null)
         {
+            ClearNextElement();
+
             nextElement = GetNextElement();
-         
-            List<GameObject> children = new List<GameObject>();
-            foreach (Transform child in nextElementGO.transform) children.Add(child.gameObject);
-            children.ForEach(child => Destroy(child));
 
             (Instantiate(nextElement) as GameObject).transform.SetParent(nextElementGO.transform, false);
-            
         }
     }
 
@@ -312,6 +317,8 @@ public class UILentaController : MonoBehaviour
             buildType = Clickable.BuildingType.Fountain;
         return buildType;
     }
+
+    
     /*
     float GetReloadFountainTime()
     {
