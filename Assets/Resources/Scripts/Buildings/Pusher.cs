@@ -1,17 +1,19 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public class Pusher : Building
+public class Pusher : MonoBehaviour// Building
 {
     //float lifeTime = GameplayConstants.;
 
     //Color startColor;
     //Color finalColor;
+    /*
     bool isUsed;
     public GameObject child;
     List<Alien> aliens = new List<Alien>();
     // Use this for initialization
     Library library;
+
 
     void Awake()
     {
@@ -53,6 +55,7 @@ public class Pusher : Building
         //alien.SetBlackHole();
     }
 
+    /*
     public void ExpulsionAll()
     {
         foreach(Alien alien in aliens)
@@ -69,5 +72,5 @@ public class Pusher : Building
             return true;
 
         return false;
-    }
+    }*/
 }

@@ -43,14 +43,9 @@ public class Clickable : MonoBehaviour {
     void Start()
     {
 
-        if (num < 10)
-            floor = 0;
-        else if (num < 18)
-            floor = 1;
-        else if (num < 26)
-            floor = 2;
-        else if (num < 34)
-            floor = 3;
+        floor = library.map.GetFloorByClickableNum(num);
+        
+       
         startColor = GetComponent<Image>().color;
         ToDefault();
     }
@@ -157,6 +152,7 @@ public class Clickable : MonoBehaviour {
         return currentBlackHole.gameObject;
     }
 
+    /*
     public GameObject BuildPusher()
     {
         //  MoveAllAlienInClickable();
@@ -165,7 +161,7 @@ public class Clickable : MonoBehaviour {
         SetAliensToCurrentPusher();
 
         return currentPusher.gameObject;
-    }
+    }*/
 
     public GameObject BuildHealing()
     {
@@ -375,13 +371,13 @@ public class Clickable : MonoBehaviour {
         }
         else
         {
-            if (num == 0 || num == 14 || num == 17 || num == 18 || num == 21 || num == 33) 
+            if (library.map.IsRightJump(num))
             {
-                return transform.position + new Vector3(25, 0f, 0f) * library.canvas.scaleFactor;
+                return transform.position + new Vector3(33, 0f, 0f) * library.canvas.scaleFactor;
             }
-            else if (num == 9 || num == 10 || num == 13 || num == 22 || num == 25 || num == 26)
+            else if (library.map.IsLeftJump(num))
             {
-                return transform.position + new Vector3(-25f, 0f, 0f) * library.canvas.scaleFactor;
+                return transform.position + new Vector3(-33f, 0f, 0f) * library.canvas.scaleFactor;
             }
 
         }
@@ -428,13 +424,14 @@ public class Clickable : MonoBehaviour {
         }
     }
 
+    /*
     void SetAliensToCurrentPusher()
     {
         foreach (Alien alien in library.aliens.GetComponent<AlienController>().GetAliensInCell(this))
         {
             ((Pusher)currentPusher).AddAlien(alien);
         }
-    }
+    }*/
 
     void SetAliensToCurrentHealing()
     {
@@ -531,6 +528,6 @@ public class Clickable : MonoBehaviour {
         RectTransform rt = GetComponent<RectTransform>();
 
         float treshold = rt.rect.width * 0.8f * library.canvas.scaleFactor / 2f;
-        return GetComponent<RectTransform>().position;/* + new Vector3(Random.Range(-treshold, treshold),0,0);*/
+        return GetComponent<RectTransform>().position + new Vector3(Random.Range(-treshold, treshold),0,0);
     }
 }

@@ -54,6 +54,35 @@ public class PreferencesSaver : MonoBehaviour
     }
 
 
+    public static void SetEnterInVkGroup()
+    {
+        SavePref("EnterInVkGround", true + "");
+    }
+
+    public static bool IsEnterInVkGroup()
+    {
+        string val = GetPref("EnterInVkGround", false + "");
+        return bool.Parse(val);
+    }
+
+    public static void SetDatePostVk(DateTime dateTime)
+    {
+        SavePref("DatePostVk", dateTime + "");
+    }
+
+    public static DateTime GetDatePostVk()
+    {
+        try
+        {
+            return System.DateTime.Parse(GetPref("DatePostVk", System.DateTime.MinValue.ToString()));
+        }
+        catch (FormatException)
+        {
+            return System.DateTime.MinValue;
+        }
+    }
+
+
     public static int GetNumReward()
     {
         string val = GetPref("NumReward", 0 + "");

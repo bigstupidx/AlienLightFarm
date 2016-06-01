@@ -6,21 +6,19 @@ using System.Collections.Generic;
 public class Lee : MonoBehaviour
 {
 
-    const int W = 10;         // ширина рабочего поля
-    const int H = 7;         // высота рабочего поля
+    const int W = 8;         // ширина рабочего поля
+    const int H = 5;         // высота рабочего поля
     public const int WALL = -1;         // непроходимая ячейка
     public const int BLANK = -2;         // свободная непомеченная ячейка
     public const int AIR = -3;         // свободная непомеченная ячейка
 
     //  int px[W * H], py[W * H];      // координаты ячеек, входящих в путь
     public static int[,] startGrid = {
-        {BLANK,BLANK,BLANK,BLANK,BLANK,BLANK,BLANK,BLANK,BLANK,BLANK},
-        {AIR,  WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, AIR },
-        {AIR,  BLANK,BLANK,BLANK,BLANK,BLANK,BLANK,BLANK,BLANK,AIR},
-        {WALL, WALL, WALL, WALL, AIR,  AIR,  WALL, WALL, WALL, WALL },
-        {BLANK,BLANK,BLANK,BLANK,AIR,  AIR,  BLANK,BLANK,BLANK,BLANK},
-        {AIR,  WALL, WALL, WALL, WALL, WALL, WALL, WALL, WALL, AIR },
-        {AIR,  BLANK,BLANK,BLANK,BLANK,BLANK,BLANK,BLANK,BLANK,AIR},
+        {BLANK,BLANK,BLANK,BLANK,BLANK,BLANK,BLANK,BLANK},
+        {WALL, WALL, WALL, AIR,  AIR,  WALL, WALL, WALL },
+        {BLANK,BLANK,BLANK,AIR,  AIR,  BLANK,BLANK,BLANK},
+        {AIR,  WALL, WALL, WALL, WALL, WALL,  WALL, AIR },
+        {AIR,  BLANK,BLANK,BLANK,BLANK,BLANK,BLANK,AIR},
        };  
                   // рабочее поле
 
@@ -258,23 +256,26 @@ public class Lee : MonoBehaviour
 
             case 1:
                 y = 2;
-                x = currentClickableNum % 10 + 1;
+
+                if (currentClickableNum - 8 < 3)
+                    x = currentClickableNum - 8;
+                else
+                    x = currentClickableNum - 8 + 2;
                 break;
 
             case 2:
                 y = 4;
 
-                if (currentClickableNum - 18 < 4)
-                    x = currentClickableNum - 18;
-                else
-                    x = currentClickableNum - 18 + 2;
+                x = currentClickableNum % 14 + 1;
+
                 break;
 
+                /*
             case 3:
                 y = 6;
                 x = currentClickableNum - 26 + 1;
                 break;
-
+                */
             default: x = 0; y = 0; break;
         }
 

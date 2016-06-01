@@ -11,6 +11,7 @@ public class GameController : MonoBehaviour {
 	// Use this for initialization
 	void Awake () {
         library = GameObject.FindObjectOfType<Library>();
+
 	}
 	
 	// Update is called once per frame

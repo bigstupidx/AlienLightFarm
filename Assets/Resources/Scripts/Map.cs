@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 public class Map : MonoBehaviour {
 
-    public Clickable[] cells = new Clickable[34];
+    public Clickable[] cells;
     Library library;
 
     bool lightIsOn;
@@ -38,7 +38,7 @@ public class Map : MonoBehaviour {
         {
             if (tempArr.Count == 0)
                 return cells[0];
-                
+
 
             int randomNum = Random.Range(0, tempArr.Count - 1);
             int num = tempArr[randomNum];
@@ -88,8 +88,8 @@ public class Map : MonoBehaviour {
                 else
                 {*/
 
-         List<Clickable> tempArrCl = GetClickableInArea(clickable, GameplayConstants.AlienMinDistance, GameplayConstants.AlienClampDistance[attempt]);
-       // Debug.Log(tempArrCl.Count);
+        List<Clickable> tempArrCl = GetClickableInArea(clickable, GameplayConstants.AlienMinDistance, GameplayConstants.AlienClampDistance[attempt]);
+        // Debug.Log(tempArrCl.Count);
 
         /* for (int i = minCell; i <= maxCell; i++)
          {
@@ -103,26 +103,27 @@ public class Map : MonoBehaviour {
             //        break;
 
             if (tempArrCl.Count == 0)
-               break;
+                break;
 
             cell = tempArrCl[Random.Range(0, tempArrCl.Count)];
 
             tempArrCl.Remove(cell);
-           /* int randomNum = Random.Range(0, tempArr.Count);
-            int num = tempArr[randomNum];
+            /* int randomNum = Random.Range(0, tempArr.Count);
+             int num = tempArr[randomNum];
 
-            cell = cells[num];
-            
-            tempArr.RemoveAt(randomNum);
-            */
+             cell = cells[num];
+
+             tempArr.RemoveAt(randomNum);
+             */
         } while (!cell.IsFreeForMove());
 
-        if (cell == null && attempt < GameplayConstants.AlienClampDistance.Length-1)
+        if (cell == null && attempt < GameplayConstants.AlienClampDistance.Length - 1)
             GetRandomFreeCellToMove(clickable, listClickable, ++attempt);
 
         return cell;
     }
 
+    /*
     public Clickable GetClickableToNextFloor(int currentClickable, int currentFloor, int finalFloor)
     {
         switch (currentFloor)
@@ -144,53 +145,62 @@ public class Map : MonoBehaviour {
             default: return null;
         }
 
-    }
+    }*/
 
     public bool IsJumping(Clickable temp)
     {
         if (temp == null)
             return false;
 
-        if (temp.num == 0 || temp.num == 9 || temp.num == 13 || temp.num == 14 || temp.num == 10 || temp.num == 17 || temp.num == 18 || temp.num == 25 || temp.num == 21 || temp.num == 22 || temp.num == 26 || temp.num == 33)
+        if (temp.num == 3 || temp.num == 4 || temp.num == 8 || temp.num == 10 || temp.num == 11 || temp.num == 13 || temp.num == 14 || temp.num == 19)
             return true;
         else
             return false;
     }
 
-    public bool IsExtremeForWallToLeft(Clickable temp)
+    
+    public bool IsRightJump(int num)
     {
-        if (temp == null)
-            return false;
 
-        if (temp.num == 9 || temp.num == 17 ||  temp.num == 25 || temp.num == 21 || temp.num == 33)
+        if (num == 4 || num == 8 ||  num == 10 || num == 19)
             return true;
         else
             return false;
     }
 
-    public bool IsExtremeForWallToRight(Clickable temp)
+    public bool IsLeftJump(int num)
     {
-        if (temp == null)
-            return false;
 
-        if (temp.num == 0 || temp.num == 10 || temp.num == 18 ||   temp.num == 22 || temp.num == 26 )
+        if (num == 3 || num == 11 || num == 13 || num == 14)
             return true;
         else
             return false;
     }
+
+    /*
+public bool IsExtremeForWallToRight(Clickable temp)
+{
+    if (temp == null)
+        return false;
+
+    if (temp.num == 0 || temp.num == 10 || temp.num == 18 ||   temp.num == 22 || temp.num == 26 )
+        return true;
+    else
+        return false;
+}*/
 
     public Alien.JumpDirection GetJumpDirection(Clickable temp)
     {
-        if (temp.num == 0 || temp.num == 14 || temp.num == 18)
+        if (temp.num == 4 || temp.num == 8)
             return Alien.JumpDirection.RightUp;
 
-        if (temp.num == 9 || temp.num == 13 || temp.num == 25)
+        if (temp.num == 3 || temp.num == 13)
             return Alien.JumpDirection.LeftUp;
 
-        if (temp.num == 26 || temp.num == 22 || temp.num == 10)
+        if (temp.num == 11 || temp.num == 14)
             return Alien.JumpDirection.LeftDown;
 
-        if (temp.num == 33 || temp.num == 21 || temp.num == 17)
+        if (temp.num == 10 || temp.num == 19)
             return Alien.JumpDirection.RightDown;
 
         return Alien.JumpDirection.None;
@@ -198,47 +208,34 @@ public class Map : MonoBehaviour {
 
     public Clickable GetClickableAfterJump(Clickable temp)
     {
-        if (temp.num == 0)
+        if (temp.num == 3)
             return cells[10];
 
-        if (temp.num == 9)
-            return cells[17];
+        if (temp.num == 10)
+            return cells[3];
 
-        if (temp.num == 17)
-            return cells[9];
+        if (temp.num == 4)
+            return cells[11];
 
-        if (temp.num == 10 )
-            return cells[0];
+        if (temp.num == 11)
+            return cells[4];
 
 
 
-        if (temp.num == 13)
-            return cells[21];
-
-        if (temp.num == 14)
-            return cells[22];
-
-        if (temp.num == 21)
-            return cells[13];
-
-        if (temp.num == 22)
+        if (temp.num == 8)
             return cells[14];
 
+        if (temp.num == 14)
+            return cells[8];
 
-        if (temp.num == 18)
-            return cells[26];
+        if (temp.num == 13)
+            return cells[19];
 
-        if (temp.num == 25)
-            return cells[33];
-
-        if (temp.num == 26)
-            return cells[18];
-
-        if (temp.num == 33)
-            return cells[25];
+        if (temp.num == 19)
+            return cells[13];
 
 
-        Debug.Log("LOL " + temp.num);
+
         return null;
     }
 
@@ -258,11 +255,11 @@ public class Map : MonoBehaviour {
             temp = listClickable;
         }
 
-      /*  Clickable ignoreFountain = alien.GetIgnoreFountainClickable();
+        /*  Clickable ignoreFountain = alien.GetIgnoreFountainClickable();
 
-        if (ignoreFountain != null && temp.Contains(ignoreFountain))
-            temp.Remove(ignoreFountain);
-            */
+          if (ignoreFountain != null && temp.Contains(ignoreFountain))
+              temp.Remove(ignoreFountain);
+              */
 
         foreach (Clickable cell in temp)
         {
@@ -275,8 +272,8 @@ public class Map : MonoBehaviour {
             }
         }
 
-    //    if(clickable!= null)
-     //   Debug.Log(clickable.num);
+        //    if(clickable!= null)
+        //   Debug.Log(clickable.num);
 
 
         return clickable;
@@ -294,17 +291,17 @@ public class Map : MonoBehaviour {
     {
         Clickable clickable = null;
 
-        foreach(Clickable cell in cells)
+        foreach (Clickable cell in cells)
         {
             bool trueX = false;
             bool trueY = false;
 
             RectTransform rt = cell.GetComponent<RectTransform>();
 
-            if (rt.position.x + rt.rect.width/2f*library.canvas.scaleFactor > pos.x 
+            if (rt.position.x + rt.rect.width / 2f * library.canvas.scaleFactor > pos.x
                 && rt.position.x - rt.rect.width / 2f * library.canvas.scaleFactor < pos.x)
             {
-              
+
                 trueX = true;
             }
             else
@@ -326,8 +323,8 @@ public class Map : MonoBehaviour {
             if (trueX && trueY)
             {
 
-              clickable = cell;
-             break;
+                clickable = cell;
+                break;
             }
         }
 
@@ -423,30 +420,30 @@ public class Map : MonoBehaviour {
         Queue<Clickable> tempQueue = new Queue<Clickable>();
         for (int i = 0; i < vectArr.Length; i++)
         {
-           // Debug.Log(vectArr[i]);
-                if (i == vectArr.Length - 1)
-                {
-                    tempQueue.Enqueue(GetClickableByPosInMatrix(vectArr[i]));
-                        break;
-                }
+            // Debug.Log(vectArr[i]);
+            if (i == vectArr.Length - 1)
+            {
+                tempQueue.Enqueue(GetClickableByPosInMatrix(vectArr[i]));
+                break;
+            }
 
-                if(IsJumping(GetClickableByPosInMatrix(vectArr[i])) && GetClickableByPosInMatrix(vectArr[i+1]) == null)
-                {
-                    tempQueue.Enqueue(GetClickableByPosInMatrix(vectArr[i]));
-                    i += 2;
-                }
-               
+            if (IsJumping(GetClickableByPosInMatrix(vectArr[i])) && GetClickableByPosInMatrix(vectArr[i + 1]) == null)
+            {
+                tempQueue.Enqueue(GetClickableByPosInMatrix(vectArr[i]));
+                i += 2;
+            }
+
         }
         //Debug.Log(" ");
-        
+
         return tempQueue;
-  
+
     }
 
     public List<Clickable> GetClickableInArea(Clickable currentClickable, int min, int length)
     {
         Vector2 currentPosInMatrix = Lee.GetPosInMatrix(currentClickable.num, currentClickable.GetFloor());
-        Vector2[] vectArr = Lee.GetPositionInArea((int)currentPosInMatrix.x, (int)currentPosInMatrix.y, min,length);
+        Vector2[] vectArr = Lee.GetPositionInArea((int)currentPosInMatrix.x, (int)currentPosInMatrix.y, min, length);
 
         List<Clickable> listClickable = new List<Clickable>();
 
@@ -454,7 +451,7 @@ public class Map : MonoBehaviour {
         {
             Clickable clickable = GetClickableByPosInMatrix(vect);
 
-            if (clickable!= null)
+            if (clickable != null)
                 listClickable.Add(clickable);
         }
 
@@ -472,45 +469,45 @@ public class Map : MonoBehaviour {
                 break;
 
             case 2:
-                if (posInMatrix.x == 0 || posInMatrix.x == 9)
+                if (posInMatrix.x == 3 || posInMatrix.x == 4)
                 {
                     x = -1;
                     break;
                 }
 
-                
-                x = (int)posInMatrix.x+ 10 - 1;
+                if (posInMatrix.x < 3)
+                    x = (int)posInMatrix.x + 8;
+                else
+                    x = (int)posInMatrix.x + 8 - 2;
                 break;
+
+
 
             case 4:
 
-                if (posInMatrix.x == 5 || posInMatrix.x == 4)
+                if (posInMatrix.x == 0 || posInMatrix.x == 7)
                 {
                     x = -1;
                     break;
                 }
 
-              
 
-                if (posInMatrix.x < 4)
-                    x = (int) posInMatrix.x + 18;
-                else
-                    x = (int) posInMatrix.x + 18 - 2;
+                x = (int)posInMatrix.x + 14 - 1;
                 break;
+            /*
+        case 6:
 
-            case 6:
-
-                if (posInMatrix.x == 0 || posInMatrix.x == 9)
-                {
-                    x = -1;
-                    break;
-                }
-                x = (int)posInMatrix.x + 26 - 1;
-
-
+            if (posInMatrix.x == 0 || posInMatrix.x == 9)
+            {
+                x = -1;
                 break;
+            }
+            x = (int)posInMatrix.x + 26 - 1;
 
-            default: x = -1;  break;
+
+            break;
+            */
+            default: x = -1; break;
         }
 
         if (x == -1)
@@ -520,6 +517,7 @@ public class Map : MonoBehaviour {
 
     }
 
+    /*
     public Vector2 GetExpulsionTargetPosition(Alien alien, Clickable clickable)
     {
         if(IsExtremeForWallToLeft(clickable))
@@ -541,19 +539,21 @@ public class Map : MonoBehaviour {
             else
                 return new Vector2(clickable.transform.position.x  - library.buildings.wall.rect.width / 2f * library.canvas.scaleFactor * 1.5f, alien.transform.position.y);
         }
-    }
+    }*/
 
-    public Vector2 GetPusherExpulsionTargetPosition(Alien alien, Clickable clickable)
-    {
-        Clickable tempClickable = GetRandomClickableOnFloorForExpulsion(alien,clickable);
-        float pos = clickable.GetComponent<RectTransform>().sizeDelta.x / 2f * Random.Range(0f, 0.9f);
+    /*
+public Vector2 GetPusherExpulsionTargetPosition(Alien alien, Clickable clickable)
+{
+    Clickable tempClickable = GetRandomClickableOnFloorForExpulsion(alien,clickable);
+    float pos = clickable.GetComponent<RectTransform>().sizeDelta.x / 2f * Random.Range(0f, 0.9f);
 
-        if (Random.Range(1, 3) == 2)
-            pos *= (-1);
+    if (Random.Range(1, 3) == 2)
+        pos *= (-1);
 
-        return new Vector2(tempClickable.transform.position.x + pos* library.canvas.scaleFactor, alien.transform.position.y);
-    }
+    return new Vector2(tempClickable.transform.position.x + pos* library.canvas.scaleFactor, alien.transform.position.y);
+}*/
 
+    /*
     Clickable GetRandomClickableOnFloorForExpulsion(Alien alien, Clickable currentClickable)
     {
         List<Clickable> tempList = new List<Clickable>();
@@ -581,7 +581,7 @@ public class Map : MonoBehaviour {
         return tempList[Random.Range(0, tempList.Count)];
 
         
-    }
+    }*/
 
 
 
@@ -592,16 +592,16 @@ public class Map : MonoBehaviour {
         lightIsOn = true;
 
         foreach (Clickable cl in cells)
-                cl.OnHighlight(buildingType);
-                   
+            cl.OnHighlight(buildingType);
+
     }
 
     public void OffHighlightAllActiveClickable()
     {
         lightIsOn = false;
         foreach (Clickable cl in cells)
-                cl.OffHighlight();
-           
+            cl.OffHighlight();
+
     }
 
     public void LandWasChanged()
@@ -617,4 +617,19 @@ public class Map : MonoBehaviour {
             cell.ToDefault();
     }
 
+
+    public int GetFloorByClickableNum(int num)
+    {
+
+        int floor = 0;
+
+        if (num< 8)
+            floor = 0;
+        else if (num< 14)
+            floor = 1;
+        else if (num< 20)
+            floor = 2;
+
+        return floor;
+    }
 }

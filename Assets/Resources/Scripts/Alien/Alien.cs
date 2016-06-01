@@ -116,7 +116,12 @@ public class Alien : MonoBehaviour {
                 liveTime -= Time.deltaTime;
             liveTime = Mathf.Max(liveTime, 0);
 
-
+            if(currentMovementState == AlienMovementState.MoveToPoint && IsVeryHungry() && currentClickable.IsFountain())
+            {
+                SetMovementState(AlienMovementState.Charged);
+                currentFountainTarget = null;
+                StopAllCoroutines();
+            }
 
             /*
             if (AlienInWall() && !currentMovementState.Equals(AlienMovementState.Jump) && !currentLiveState.Equals(AlienLiveState.Born))
@@ -480,6 +485,7 @@ public class Alien : MonoBehaviour {
         SetMovementState(AlienMovementState.Free);
     }*/
 
+        /*
     IEnumerator PusherExpulsionAlienCoroutine()
     {
         SetMovementState(AlienMovementState.Expulsion);
@@ -500,8 +506,9 @@ public class Alien : MonoBehaviour {
         }
         currentClickableExpulsion = null;
         SetMovementState(AlienMovementState.Free);
-    }
+    }*/
 
+        /*
     public void PusherExpulsionAlien()
     {
         if (currentMovableCoroutine != null)
@@ -512,7 +519,7 @@ public class Alien : MonoBehaviour {
 
         StartCoroutine(PusherExpulsionAlienCoroutine());
     }
-
+    */
 
     IEnumerator MoveToCoroutine(Clickable clickable)
     {
@@ -742,5 +749,13 @@ public class Alien : MonoBehaviour {
 
         }
         SetMovementState(state);
+    }
+
+    bool IsVeryHungry()
+    {
+        if (liveTime < GameplayConstants.AlienFullLiveTime * GameplayConstants.AlienVeryHungryCoef)
+            return true;
+        else
+            return false;
     }
 }

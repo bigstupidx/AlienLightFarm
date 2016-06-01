@@ -42,7 +42,10 @@ public class ScreenController : MonoBehaviour {
     {
 
         if (currentScreen == null)
+        {
             startScreen.SetActive(true);
+            library.playGameServices.Authenticate();
+        }
         else
         {
             startScreen.SetActive(true);
@@ -55,7 +58,7 @@ public class ScreenController : MonoBehaviour {
              "time", 0.5f,
              "onupdate", (System.Action<object>)(newVal =>
              {
-                 endScreen.GetComponent<CanvasGroup>().alpha = (float) newVal;
+                 endScreen.GetComponent<CanvasGroup>().alpha = (float)newVal;
              }
              ),
              "oncomplete", "OnCompleteShowStartScreen",
@@ -132,9 +135,9 @@ public class ScreenController : MonoBehaviour {
     {
         endScreen.SetActive(true);
         library.money.gameObject.SetActive(true);
-        endScreen.GetComponent<EndScreen>().UpdateScore();
-        endScreen.GetComponent<EndScreen>().ShowAd();
-        endScreen.GetComponent<EndScreen>().ShowGetRewardButton();
+        endScreen.GetComponent<EndScreen>().UpdateAll();
+           
+
 
         currentScreen = endScreen;
         endScreen.GetComponent<CanvasGroup>().alpha = (float)0;

@@ -10,9 +10,13 @@ public class Money : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
        money =  PreferencesSaver.GetMoney();
-	}
-	
-	public void AddMoney(int val)
+        moneyText.text = money + "";
+
+    }
+
+
+
+    public void AddMoney(int val)
     {
         money += val;
         moneyText.text = money + "";

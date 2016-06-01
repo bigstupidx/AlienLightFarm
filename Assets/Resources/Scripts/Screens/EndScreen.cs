@@ -12,6 +12,8 @@ public class EndScreen : MonoBehaviour {
 
     public Button videoAdButton;
     public Button getRewardButton;
+    public Button enterVkButton;
+    public Button postVkButton;
     // Use this for initialization
 	void Awake () {
         library = GameObject.FindObjectOfType<Library>();
@@ -42,6 +44,8 @@ public class EndScreen : MonoBehaviour {
 
         library.money.SaveMoney();
 
+        library.playGameServices.AdScore(aliensCount);
+
     }
 
     public void ShowAd()
@@ -66,10 +70,50 @@ public class EndScreen : MonoBehaviour {
             getRewardButton.gameObject.SetActive(false);
     }
 
+    public void UpdateAll()
+    {
+        UpdateScore();
+        ShowAd();
+        ShowGetRewardButton();
+        ShowEnterInVk();
+        ShowPostVk();
+    }
+
+    public void ShowEnterInVk()
+    {
+        if (library.vkController.IsShowVkGroupButton())
+            enterVkButton.gameObject.SetActive(true);
+        else
+            enterVkButton.gameObject.SetActive(false);
+    }
+
+    public void ShowPostVk()
+    {
+        if (library.vkController.IsShowVkPostButton())
+            postVkButton.gameObject.SetActive(true);
+        else
+            postVkButton.gameObject.SetActive(false);
+    }
 
     public void HideRewardButton()
     {
         getRewardButton.gameObject.SetActive(false);
     }
+
+    public void HideAdButton()
+    {
+        videoAdButton.gameObject.SetActive(false);
+    }
+
+    public void HideEnterVkButton()
+    {
+        enterVkButton.gameObject.SetActive(false);
+    }
+
+    public void HidePostVkButton()
+    {
+        postVkButton.gameObject.SetActive(false);
+    }
+
 
 }

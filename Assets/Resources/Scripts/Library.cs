@@ -19,4 +19,8 @@ public class Library : MonoBehaviour {
     public Money money;
     public AdController adController;
     public BgController bgController;
+
+    public PlayGameServices playGameServices;
+
+    public VKController vkController;
 }
