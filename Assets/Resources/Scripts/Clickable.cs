@@ -204,8 +204,8 @@ public class Clickable : MonoBehaviour {
         go.transform.SetParent(library.aliens.transform, false);
 
         Vector3 tempPos = GetRandomPositionInClickable();
-        tempPos.z = 1;
-        go.GetComponent<RectTransform>().position = tempPos;
+        //  tempPos.z = 1;
+        go.GetComponent<RectTransform>().anchoredPosition = tempPos;
 
      //   go.GetComponent<RectTransform>().anchoredPosition -= new Vector2(0, Alien.DeltaHeight);
 
@@ -361,23 +361,23 @@ public class Clickable : MonoBehaviour {
         return floor;
     }
 
-    public Vector3 GetLocalPosition(bool isFinalTarget)
+    public Vector2 GetLocalPosition(bool isFinalTarget)
     {
         if (isFinalTarget)
         {
             float temp = GetComponent<RectTransform>().rect.width / 2f - 10;
             float randomTemp = Random.Range(-temp, temp);
-            return transform.position + new Vector3(randomTemp, 0, 0) * library.canvas.scaleFactor;
+            return GetComponent<RectTransform>().anchoredPosition + new Vector2(randomTemp, 0 );
         }
         else
         {
             if (library.map.IsRightJump(num))
             {
-                return transform.position + new Vector3(33, 0f, 0f) * library.canvas.scaleFactor;
+                return GetComponent<RectTransform>().anchoredPosition + new Vector2(33, 0f) ;
             }
             else if (library.map.IsLeftJump(num))
             {
-                return transform.position + new Vector3(-33f, 0f, 0f) * library.canvas.scaleFactor;
+                return GetComponent<RectTransform>().anchoredPosition + new Vector2(-33f, 0f);
             }
 
         }
@@ -527,7 +527,10 @@ public class Clickable : MonoBehaviour {
     {
         RectTransform rt = GetComponent<RectTransform>();
 
-        float treshold = rt.rect.width * 0.8f * library.canvas.scaleFactor / 2f;
-        return GetComponent<RectTransform>().position + new Vector3(Random.Range(-treshold, treshold),0,0);
+        float treshold = rt.rect.width  * 0.8f  / 2f;
+
+   //     Debug.Log(library.canvas.scaleFactor);
+
+        return rt.anchoredPosition +  new Vector2(Random.Range(-treshold, treshold),0);
     }
 }

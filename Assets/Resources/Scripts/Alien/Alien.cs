@@ -217,7 +217,7 @@ public class Alien : MonoBehaviour {
 
     void GetPositionInClickable()
     {
-        Clickable tempClickable = library.map.GetCurrentClickable(transform.position);
+        Clickable tempClickable = library.map.GetCurrentClickable(transform.GetComponent<RectTransform>().anchoredPosition);
 
         if (tempClickable != null)
         {
@@ -442,6 +442,7 @@ public class Alien : MonoBehaviour {
 
     IEnumerator JumpCoroutine(JumpDirection direction, Clickable clickable)
     {
+        
         SetMovementState(AlienMovementState.Jump, direction);
         readyToJump = false;
 
@@ -454,7 +455,7 @@ public class Alien : MonoBehaviour {
         }
 
         transform.position = childAnim.transform.position;
-        transform.position = new Vector3(transform.position.x, transform.position.y - fChild.GetComponent<RectTransform>().anchoredPosition.y * library.canvas.scaleFactor, transform.position.z);
+        transform.GetComponent<RectTransform>().anchoredPosition = new Vector2(transform.GetComponent<RectTransform>().anchoredPosition.x, transform.GetComponent<RectTransform>().anchoredPosition.y - fChild.GetComponent<RectTransform>().anchoredPosition.y);
 
         //      SetLastTarget(clickable);
 
@@ -540,15 +541,15 @@ public class Alien : MonoBehaviour {
         {
             SetMovementState(AlienMovementState.MoveToJump);
         }
-        Vector3 targetPosition = clickable.GetLocalPosition(isFinalTarget) /*- library.canvas.scaleFactor * new Vector3(0, DeltaHeight, 0)*/;
+        Vector2 targetPosition = clickable.GetLocalPosition(isFinalTarget) /*- library.canvas.scaleFactor * new Vector3(0, DeltaHeight, 0)*/;
 
 
-        while (Vector2.Distance(rt.position, targetPosition) > 0.01f)
+        while (Vector2.Distance(rt.anchoredPosition, targetPosition) > 1f)
         {
             while (pauseInCupol || pauseInBlackHole)
                 yield return null;
 
-            Vector2 tempPosition = Vector2.MoveTowards(rt.position, targetPosition, Time.deltaTime * speed);
+            Vector2 tempPosition = Vector2.MoveTowards(rt.anchoredPosition, targetPosition, Time.deltaTime * speed);
             /*
             if (currentClickable.IsWall() && AlienInWall(tempPosition))
             {
@@ -562,7 +563,7 @@ public class Alien : MonoBehaviour {
                 StopAllCoroutines();
             }
             else*/
-            rt.position = tempPosition;
+            rt.anchoredPosition = tempPosition;
 
 
 

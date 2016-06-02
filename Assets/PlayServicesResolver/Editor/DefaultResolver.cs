@@ -92,7 +92,7 @@ namespace GooglePlayServices
                 {
                     if (s.EndsWith(".cs") || s.EndsWith(".js"))
                     {
-                        Debug.Log(s + " imported, resolving play-services");
+                 //       Debug.Log(s + " imported, resolving play-services");
                         return true;
                     }
                 }
@@ -256,7 +256,7 @@ namespace GooglePlayServices
                     // Clean up the aar file.
                     File.Delete(Path.GetFullPath(aarFile));
 
-                    Debug.Log(aarFile + " expanded successfully");
+           //         Debug.Log(aarFile + " expanded successfully");
                 }
                 else
                 {

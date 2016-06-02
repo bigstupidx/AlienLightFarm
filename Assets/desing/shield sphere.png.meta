@@ -1,9 +1,10 @@
 fileFormatVersion: 2
 guid: cf681c707496b614181868b65746cae0
-timeCreated: 1464805520
+timeCreated: 1464861654
 licenseType: Free
 TextureImporter:
-  fileIDToRecycleName: {}
+  fileIDToRecycleName:
+    21300000: shield sphere_0
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -30,7 +31,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     filterMode: -1
-    aniso: -1
+    aniso: 16
     mipBias: -1
     wrapMode: 1
   nPOTScale: 0
@@ -38,7 +39,7 @@ TextureImporter:
   rGBM: 0
   compressionQuality: 50
   allowsAlphaSplitting: 0
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -49,7 +50,98 @@ TextureImporter:
   textureType: 8
   buildTargetSettings: []
   spriteSheet:
-    sprites: []
+    sprites:
+    - name: shield sphere_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 512
+        height: 512
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 113, y: -246}
+        - {x: 119, y: -241}
+        - {x: 130, y: -241}
+        - {x: 142, y: -236}
+        - {x: 157, y: -227}
+        - {x: 163, y: -223}
+        - {x: 176, y: -214}
+        - {x: 183, y: -209}
+        - {x: 189, y: -205}
+        - {x: 203, y: -190}
+        - {x: 212, y: -179}
+        - {x: 224, y: -162}
+        - {x: 235, y: -142}
+        - {x: 241, y: -126}
+        - {x: 244, y: -122}
+        - {x: 250, y: -103}
+        - {x: 252, y: -94}
+        - {x: 254, y: -84}
+        - {x: 256, y: -69}
+        - {x: 256, y: 66}
+        - {x: 253, y: 80}
+        - {x: 251, y: 93}
+        - {x: 244, y: 117}
+        - {x: 235, y: 140}
+        - {x: 229, y: 153}
+        - {x: 223, y: 164}
+        - {x: 209, y: 182}
+        - {x: 195, y: 197}
+        - {x: 181, y: 209}
+        - {x: 165, y: 220}
+        - {x: 156, y: 226}
+        - {x: 142, y: 234}
+        - {x: 133, y: 237}
+        - {x: 119, y: 244}
+        - {x: 87, y: 252}
+        - {x: 70, y: 252}
+        - {x: 67, y: 254}
+        - {x: 59, y: 256}
+        - {x: -52, y: 256}
+        - {x: -58, y: 255}
+        - {x: -66, y: 254}
+        - {x: -88, y: 252}
+        - {x: -108, y: 247}
+        - {x: -120, y: 241}
+        - {x: -128, y: 239}
+        - {x: -139, y: 234}
+        - {x: -155, y: 227}
+        - {x: -162, y: 223}
+        - {x: -186, y: 204}
+        - {x: -197, y: 194}
+        - {x: -211, y: 177}
+        - {x: -227, y: 153}
+        - {x: -233, y: 143}
+        - {x: -240, y: 129}
+        - {x: -245, y: 112}
+        - {x: -250, y: 91}
+        - {x: -254, y: 72}
+        - {x: -256, y: 57}
+        - {x: -256, y: -53}
+        - {x: -255, y: -61}
+        - {x: -252, y: -82}
+        - {x: -250, y: -93}
+        - {x: -245, y: -112}
+        - {x: -241, y: -127}
+        - {x: -228, y: -155}
+        - {x: -222, y: -165}
+        - {x: -213, y: -175}
+        - {x: -207, y: -185}
+        - {x: -197, y: -195}
+        - {x: -179, y: -211}
+        - {x: -159, y: -225}
+        - {x: -135, y: -237}
+        - {x: -120, y: -243}
+        - {x: -99, y: -250}
+        - {x: -92, y: -251}
+        - {x: -86, y: -252}
+        - {x: -76, y: -255}
+        - {x: -68, y: -256}
+        - {x: 65, y: -256}
+        - {x: 94, y: -251}
     outline: []
   spritePackingTag: 
   userData: 

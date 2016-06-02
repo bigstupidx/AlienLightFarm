@@ -28,7 +28,7 @@ public class PlayGameServices : MonoBehaviour {
     public void Authenticate()
     {
         Social.localUser.Authenticate((bool success) => {
-            Debug.Log(success);
+           
         });
     }
 

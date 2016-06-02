@@ -56,7 +56,7 @@ public class GameplayConstants {
   //  public static int[] AgroCoefAlienCountTreshold = { 0, 10, 15, 20, 25 };
     public const float RecoveryAgroCoef = 7.5f;
 
-    
+
 
     /*
     public const int FountainTreshold = 0;
@@ -66,7 +66,7 @@ public class GameplayConstants {
     public const int PusherTreshold = 20;
     public const int HealingTreshold = 30;
     */
-    public static int[] AliensTresholds = { 0, 7, 14, 21 };
+    public static int[] AliensTresholds = { 0, 0, 0, 0 };//{ 0, 7, 14, 21 };
 
     public const int PusherRange = 3;
     public const float PusherExpansionSpeed = 5f;

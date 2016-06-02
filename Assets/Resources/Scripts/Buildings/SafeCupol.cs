@@ -26,7 +26,8 @@ public class SafeCupol : Building
     {
         lifeTime = Mathf.Max(lifeTime - Time.deltaTime, 0);
 
-        child.GetComponent<Image>().color = Color.Lerp(finalColor, startColor, lifeTime / GameplayConstants.SafeCupolLifeTime);// new Color(GetComponent<Image>().color.r, GetComponent<Image>().color.g, GetComponent<Image>().color.b, startAlpha + lifeTime/FullLifeTime);
+        if(lifeTime <= 1)
+        child.GetComponent<Image>().color = Color.Lerp(finalColor, startColor, lifeTime / 1);// new Color(GetComponent<Image>().color.r, GetComponent<Image>().color.g, GetComponent<Image>().color.b, startAlpha + lifeTime/FullLifeTime);
     }
 
     public override bool IsDestroyed()

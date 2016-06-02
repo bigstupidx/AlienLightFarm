@@ -23,4 +23,6 @@ public class Library : MonoBehaviour {
     public PlayGameServices playGameServices;
 
     public VKController vkController;
+
+    public Camera cam;
 }

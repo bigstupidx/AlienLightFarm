@@ -287,7 +287,7 @@ public bool IsExtremeForWallToRight(Clickable temp)
         return Lee.GetLength((int)aVector.x, (int)aVector.y, (int)bVector.x, (int)bVector.y);
     }
 
-    public Clickable GetCurrentClickable(Vector3 pos)
+    public Clickable GetCurrentClickable(Vector2 pos)
     {
         Clickable clickable = null;
 
@@ -298,8 +298,8 @@ public bool IsExtremeForWallToRight(Clickable temp)
 
             RectTransform rt = cell.GetComponent<RectTransform>();
 
-            if (rt.position.x + rt.rect.width / 2f * library.canvas.scaleFactor > pos.x
-                && rt.position.x - rt.rect.width / 2f * library.canvas.scaleFactor < pos.x)
+            if (rt.anchoredPosition.x + rt.rect.width / 2f  > pos.x
+                && rt.anchoredPosition.x - rt.rect.width / 2f  < pos.x)
             {
 
                 trueX = true;
@@ -310,8 +310,8 @@ public bool IsExtremeForWallToRight(Clickable temp)
             }
 
 
-            if (rt.position.y + rt.rect.height / 2f * library.canvas.scaleFactor > pos.y
-              && rt.position.y - rt.rect.height / 2f * library.canvas.scaleFactor < pos.y)
+            if (rt.anchoredPosition.y + rt.rect.height / 2f  > pos.y
+              && rt.anchoredPosition.y - rt.rect.height / 2f  < pos.y)
             {
                 trueY = true;
             }
@@ -330,81 +330,7 @@ public bool IsExtremeForWallToRight(Clickable temp)
 
         return clickable;
     }
-    /*
-    public List<Clickable> GetAcceptableClickedWithWall(Alien alien)
-    {
-        List<Clickable> tempList = new List<Clickable>();
-
-        if (Clickable.BuildingType.Wall.Equals(alien.GetCurrentClickable().GetBuildingType()))
-        {
-
-            if (alien.GetCurrentClickable().num == 8 || alien.GetCurrentClickable().num == 24)
-            {
-                if (alien.transform.position.x < alien.GetCurrentClickable().transform.position.x)
-                {
-                    tempList.Add(cells[alien.GetCurrentClickable().num + 1]);
-                }
-                else
-                {
-                    for (int i = 0; i < alien.GetCurrentClickable().num; i++)
-                        tempList.Add(cells[i]);
-                    for (int i = alien.GetCurrentClickable().num + 2; i < cells.Length; i++)
-                        tempList.Add(cells[i]);
-                }
-            }
-            else if (alien.GetCurrentClickable().num == 16)
-            {
-                if (alien.transform.position.x > alien.GetCurrentClickable().transform.position.x)
-                {
-                    tempList.Add(cells[alien.GetCurrentClickable().num + 1]);
-                }
-                else
-                {
-                    for (int i = 0; i < alien.GetCurrentClickable().num; i++)
-                        tempList.Add(cells[i]);
-                    for (int i = alien.GetCurrentClickable().num + 2; i < cells.Length; i++)
-                        tempList.Add(cells[i]);
-                }
-            }
-            else
-            {
-                if ((alien.transform.position.x < alien.GetCurrentClickable().transform.position.x && (alien.GetCurrentFloor() == 0 || alien.GetCurrentFloor() == 2))
-                    || (alien.transform.position.x > alien.GetCurrentClickable().transform.position.x && (alien.GetCurrentFloor() == 1 || alien.GetCurrentFloor() == 3)))
-                {
-                    if (alien.GetCurrentClickable().num == 9 || alien.GetCurrentClickable().num == 25 || alien.GetCurrentClickable().num == 17 || alien.GetCurrentClickable().num == 33 || alien.GetCurrentClickable().num == 0)
-                    {
-                        
-                      
-                    }
-                    else
-                    {
-                        for (int i = alien.GetCurrentClickable().num + 1; i < cells.Length; i++)
-                            tempList.Add(cells[i]);
-                    }
-                }
-                else
-                {
-                    if (alien.GetCurrentClickable().num == 9 || alien.GetCurrentClickable().num == 25 || alien.GetCurrentClickable().num == 17 || alien.GetCurrentClickable().num == 33 || alien.GetCurrentClickable().num == 0)
-                    {
-                        for (int i = 0; i < alien.GetCurrentClickable().num; i++)
-                            tempList.Add(cells[i]);
-                        for (int i = alien.GetCurrentClickable().num + 1; i < cells.Length; i++)
-                            tempList.Add(cells[i]);
-                    }
-                    else
-                    {
-                        for (int i = 0; i < alien.GetCurrentClickable().num; i++)
-                            tempList.Add(cells[i]);
-                    }
-                }
-            }
-
-
-        }
-
-
-        return tempList;
-    }*/
+ 
 
     public Clickable GetCell(int num)
     {
@@ -517,71 +443,7 @@ public bool IsExtremeForWallToRight(Clickable temp)
 
     }
 
-    /*
-    public Vector2 GetExpulsionTargetPosition(Alien alien, Clickable clickable)
-    {
-        if(IsExtremeForWallToLeft(clickable))
-        {
-                return new Vector2(clickable.transform.position.x - library.buildings.wall.rect.width / 2f *2.5f * library.canvas.scaleFactor, alien.transform.position.y);
-        }
-        else if(IsExtremeForWallToRight(clickable))
-        {
-            return new Vector2(clickable.transform.position.x+ library.buildings.wall.rect.width / 2f * 2.5f * library.canvas.scaleFactor , alien.transform.position.y);
-
-        }
-
-        else
-        {
-            if (alien.transform.position.x >= clickable.transform.position.x)
-            {
-                return new Vector2(clickable.transform.position.x  + library.buildings.wall.rect.width / 2f * library.canvas.scaleFactor * 1.5f, alien.transform.position.y);
-            }
-            else
-                return new Vector2(clickable.transform.position.x  - library.buildings.wall.rect.width / 2f * library.canvas.scaleFactor * 1.5f, alien.transform.position.y);
-        }
-    }*/
-
-    /*
-public Vector2 GetPusherExpulsionTargetPosition(Alien alien, Clickable clickable)
-{
-    Clickable tempClickable = GetRandomClickableOnFloorForExpulsion(alien,clickable);
-    float pos = clickable.GetComponent<RectTransform>().sizeDelta.x / 2f * Random.Range(0f, 0.9f);
-
-    if (Random.Range(1, 3) == 2)
-        pos *= (-1);
-
-    return new Vector2(tempClickable.transform.position.x + pos* library.canvas.scaleFactor, alien.transform.position.y);
-}*/
-
-    /*
-    Clickable GetRandomClickableOnFloorForExpulsion(Alien alien, Clickable currentClickable)
-    {
-        List<Clickable> tempList = new List<Clickable>();
-
-        for (int i = 0; i < cells.Length; i++)
-        {
-            if (cells[i].GetFloor() == currentClickable.GetFloor() && cells[i] != currentClickable && Mathf.Abs(cells[i].num - currentClickable.num) <= GameplayConstants.PusherRange)
-            {
-
-                if ((IsExtremeForWallToLeft(currentClickable) || IsExtremeForWallToRight(currentClickable))
-                    || (alien.transform.position.x <= currentClickable.transform.position.x && cells[i].num < currentClickable.num)
-                    || (alien.transform.position.x > currentClickable.transform.position.x && cells[i].num > currentClickable.num))
-                {
-                    if (cells[i].GetFloor() == 2
-                            && ((cells[i].num >= 18 && cells[i].num <= 21 && currentClickable.num >= 22 && currentClickable.num <= 25) ||
-                                (cells[i].num >= 22 && cells[i].num <= 25 && currentClickable.num >= 18 && currentClickable.num <= 21)))
-                        continue;
-
-                    tempList.Add(cells[i]);
-
-                }
-            }
-        }
-
-        return tempList[Random.Range(0, tempList.Count)];
-
-        
-    }*/
+  
 
 
 

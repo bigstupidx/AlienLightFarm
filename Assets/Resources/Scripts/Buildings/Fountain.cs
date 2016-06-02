@@ -17,7 +17,7 @@ public class Fountain : Building
     public RawImage health;
     public RawImage bg;
 
-    const float maxWidth = 80f;
+    const float maxWidth = 95f;
     float fountainLife = GameplayConstants.FountainMinLife;
     float fountainCurrentMaxLife = GameplayConstants.FountainMinLife;
     float deltaHealth = maxWidth / GameplayConstants.FountainMaxLife;

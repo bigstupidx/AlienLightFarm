@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using System.Collections;
 
 public class BlackHole : Building
 {
@@ -11,8 +12,16 @@ public class BlackHole : Building
 
     public GameObject child;
     List<Alien> aliens = new List<Alien>();
+
+    public ParticleSystem ps;
+
+    public ParticleSystem psSpawn;
     // Use this for initialization
     Library library;
+
+    bool readyToDelete;
+
+
     void Awake()
     {
         //  startColor = child.GetComponent<Image>().color;
@@ -35,9 +44,15 @@ public class BlackHole : Building
 
                 child.transform.localScale = Vector3.zero;
             }
-        }  
-       // lifeTime = Mathf.Max(lifeTime - Time.deltaTime, 0);
+        }
+        // lifeTime = Mathf.Max(lifeTime - Time.deltaTime, 0);
         //child.GetComponent<Image>().color = Color.Lerp(finalColor, startColor, lifeTime / GameplayConstants.WallLifeTime);// new Color(GetComponent<Image>().color.r, GetComponent<Image>().color.g, GetComponent<Image>().color.b, startAlpha + lifeTime/FullLifeTime);
+
+        if (child.transform.localScale == Vector3.zero)
+        {
+            ps.Stop();
+            StartCoroutine(TimerToDelete());
+        }
     }
 
     public void AddAlien(Alien alien)
@@ -52,8 +67,9 @@ public class BlackHole : Building
         foreach(Alien alien in aliens)
         {
             Clickable currentClickable = alien.GetCurrentClickable();
-            alien.transform.position = library.map.GetRandomFreeCellForBorn(currentClickable).GetRandomPositionInClickable();
-            alien.transform.SetParent(library.aliens.transform,true);
+            Clickable randomClickable = library.map.GetRandomFreeCellForBorn(currentClickable);
+            alien.transform.SetParent(library.aliens.transform, true);
+            alien.GetComponent<RectTransform>().anchoredPosition = randomClickable.GetRandomPositionInClickable();
             alien.transform.localScale = new Vector3(1, 1, 1);
             alien.SetUnBlackHole();
 
@@ -63,10 +79,20 @@ public class BlackHole : Building
 
     public override bool IsDestroyed()
     {
-        if (child.transform.localScale == Vector3.zero)
+        if (readyToDelete)
+        {
             return true;
+        }
 
         return false;
     }
+
+    IEnumerator TimerToDelete()
+    {
+        yield return new WaitForSeconds(1f);
+
+        readyToDelete = true;
+    }
+
 }
 
