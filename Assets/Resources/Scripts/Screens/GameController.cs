@@ -6,8 +6,7 @@ public class GameController : MonoBehaviour {
     Library library;
     float currentVal;
 
-    bool stopGame;
-    bool startGame;
+    bool stopGame = true;
 	// Use this for initialization
 	void Awake () {
         library = GameObject.FindObjectOfType<Library>();
@@ -26,7 +25,7 @@ public class GameController : MonoBehaviour {
 
         //library.bgController.UpdateColor(currentVal/ GameplayConstants.MaxAgro);
 
-        library.agroLineController.UpdateLength(currentVal/100f);
+        //library.agroLineController.UpdateLength(currentVal/100f);
 
                
 	}
@@ -56,7 +55,15 @@ public class GameController : MonoBehaviour {
 
     public void StartGame()
     {
-        startGame = true;
+
+        StartCoroutine(StartGameCoroutine());
+//        library.uiButtonsController.gameObject.SetActive(true);
+
+    }
+
+    IEnumerator StartGameCoroutine()
+    {
+        yield return new WaitForSeconds(1.5f);
         stopGame = false;
     }
 
@@ -66,9 +73,21 @@ public class GameController : MonoBehaviour {
         if (!stopGame)
         {
             stopGame = true;
-            library.screenController.ShowEndScreen();
+
+            library.uiButtonsController.gameObject.SetActive(false);
+            library.map.OffHighlightAllActiveClickable();
+
+            StartCoroutine(CoroutineShowEndScreen());
         }
     }
+
+    IEnumerator CoroutineShowEndScreen()
+    {
+        yield return new WaitForSeconds(1.5f);
+        library.screenController.ShowEndScreen();
+
+    }
+
 
     public void ToDefault()
     {
@@ -77,6 +96,9 @@ public class GameController : MonoBehaviour {
         library.aliens.GetComponent<AlienController>().ToDefault();
         library.map.ToDefault();
         library.uiButtonsController.ToDefault();
+
+        library.tutorialController.ToDefault();
+        library.buildings.ClearParticles();
     }
 
     public void UpdateBackground()
@@ -85,6 +107,12 @@ public class GameController : MonoBehaviour {
 
         library.bgController.SetBackground(PreferencesSaver.GetCurrentElementInMarket());
     }
+
+    public bool IsStartGame()
+    {
+        return !stopGame;
+    }
+  
 
 
 }

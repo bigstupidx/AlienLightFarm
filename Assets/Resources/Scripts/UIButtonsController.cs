@@ -34,6 +34,7 @@ public class UIButtonsController : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
+
         ActivateHighlight();
         UpdateActiveButtons();
 
@@ -126,17 +127,22 @@ public class UIButtonsController : MonoBehaviour {
                 treshold = GameplayConstants.AliensTresholds[2]; //GameplayConstants.PusherTreshold;
             else if (uiButton.gameObject.Equals(blackHoleButton))
                 treshold = GameplayConstants.AliensTresholds[3];// GameplayConstants.HealingTreshold;
-     
+
 
 
             if (alienCount >= treshold)
+            {
                 uiButton.SetActive();
+
+                if (uiButton.gameObject.Equals(safeCupolButton))
+                    library.tutorialController.ShowTutorial2();
+            }
             else
             {
                 uiButton.SetDeactive();
 
-                if(currentButton.GetComponent<UIButton>().Equals(uiButton))
-                SetCurrentButton(fountainButton);
+                if (currentButton.GetComponent<UIButton>().Equals(uiButton))
+                    SetCurrentButton(fountainButton);
             }
         }
     }
@@ -173,13 +179,19 @@ public class UIButtonsController : MonoBehaviour {
 
     public void ButtonOnClick(GameObject go)
     {
+        if (go.Equals(safeCupolButton))
+            library.tutorialController.HideTutorial2();
+
         SetCurrentButton(go);
     }
 
     public void ClickableOnClick(Clickable clickable)
     {
-       // if (reloadTime == 0)
-       if(!currentButton.GetComponent<UIButton>().IsReload())
+        library.tutorialController.HideTutorial1(clickable);
+
+        // if (reloadTime == 0)
+
+        if (!currentButton.GetComponent<UIButton>().IsReload())
             currentSelectObject = clickable.gameObject;
     }
 

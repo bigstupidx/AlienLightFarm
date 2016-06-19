@@ -1,11 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System.Collections;
 
 public class Healing : Building {
 
-
-    public GameObject child;
     Library library;
+
+    public ParticleSystem ps;
+
+    bool readyToDelete;
+
     void Awake()
     {
         //  startColor = child.GetComponent<Image>().color;
@@ -14,22 +18,18 @@ public class Healing : Building {
 
     }
 
-
-    // Update is called once per frame
-    void Update()
+    void Start()
     {
-        if (child.transform.localScale.x > 0)
-        {
-            child.transform.localScale -= new Vector3(1, 1, 1) * Time.deltaTime * GameplayConstants.BlackHoleClosedSpeed;
-
-            if (child.transform.localScale.x <= 0)
-            {
-                child.transform.localScale = Vector3.zero;
-            }
-        }
-        // lifeTime = Mathf.Max(lifeTime - Time.deltaTime, 0);
-        //child.GetComponent<Image>().color = Color.Lerp(finalColor, startColor, lifeTime / GameplayConstants.WallLifeTime);// new Color(GetComponent<Image>().color.r, GetComponent<Image>().color.g, GetComponent<Image>().color.b, startAlpha + lifeTime/FullLifeTime);
+        GameObject goPs = Instantiate(ps.gameObject) as GameObject;
+        goPs.transform.SetParent(transform, true);
+        goPs.transform.position = transform.position;
+        goPs.transform.position += new Vector3(0, 0, 100);
+        goPs.GetComponent<RectTransform>().anchoredPosition -= new Vector2(0,30);
+        goPs.GetComponent<ParticleSystem>().Play();
+        StartCoroutine(TimerToDelete());
     }
+
+ 
 
     public void AddAlien(Alien alien)
     {
@@ -39,9 +39,18 @@ public class Healing : Building {
 
     public override bool IsDestroyed()
     {
-        if (child.transform.localScale == Vector3.zero)
+        if (readyToDelete)
+        {
             return true;
+        }
 
         return false;
+    }
+
+    IEnumerator TimerToDelete()
+    {
+        yield return new WaitForSeconds(2f);
+
+        readyToDelete = true;
     }
 }

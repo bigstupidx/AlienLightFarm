@@ -7,6 +7,7 @@ public class UIButton : MonoBehaviour {
     public Image reloadImage;
     public Image border;
     public Image block;
+    public Text reloadTime;
     float currentTime;
     // Use this for initialization
     void Start () {
@@ -21,8 +22,8 @@ public class UIButton : MonoBehaviour {
 
    //     GetComponent<Button>().interactable = false;
 
-        RectTransform rt = reloadImage.GetComponent<RectTransform>();
-        rt.anchoredPosition = new Vector2(rt.anchoredPosition.x, 0);
+        //RectTransform rt = reloadImage.GetComponent<RectTransform>();
+        //rt.anchoredPosition = new Vector2(rt.anchoredPosition.x, 0);
     }
 
 
@@ -53,23 +54,26 @@ public class UIButton : MonoBehaviour {
     {
         currentTime = time;
 
-        RectTransform rt = reloadImage.GetComponent<RectTransform>();
-        float maxHeight = rt.rect.height;
-
+        // RectTransform rt = reloadImage.GetComponent<RectTransform>();
+        //float maxHeight = rt.rect.height;
+        reloadImage.gameObject.SetActive(true);
+        reloadTime.gameObject.SetActive(true);
+        
         while(currentTime > 0)
         {
             currentTime =  currentTime - Time.deltaTime;
 
-            float currentPosY = (1-(currentTime/time)) * maxHeight;
-            rt.anchoredPosition = new Vector2(rt.anchoredPosition.x, currentPosY);
+            reloadTime.text = ((int) Mathf.Floor(currentTime)) + "";
+            //float currentPosY = (1-(currentTime/time)) * maxHeight;
+          //  rt.anchoredPosition = new Vector2(rt.anchoredPosition.x, currentPosY);
 
             if (currentTime < 0)
                 currentTime = 0;
             yield return null;
         }
-
-
-        rt.anchoredPosition = new Vector2(rt.anchoredPosition.x, rt.rect.height);
+        reloadImage.gameObject.SetActive(false);
+        reloadTime.gameObject.SetActive(false);
+      //  rt.anchoredPosition = new Vector2(rt.anchoredPosition.x, rt.rect.height);
  //       GetComponent<Button>().interactable = true;
     }
 
@@ -84,8 +88,10 @@ public class UIButton : MonoBehaviour {
     {
         StopAllCoroutines();
         currentTime = 0;
-        RectTransform rt = reloadImage.GetComponent<RectTransform>();
-        rt.anchoredPosition = new Vector2(rt.anchoredPosition.x, rt.rect.height);
+        reloadImage.gameObject.SetActive(false);
+      ///  RectTransform rt = reloadImage.GetComponent<RectTransform>();
+       // rt.anchoredPosition = new Vector2(rt.anchoredPosition.x, rt.rect.height);
+        reloadTime.gameObject.SetActive(false);
     }
 
 }

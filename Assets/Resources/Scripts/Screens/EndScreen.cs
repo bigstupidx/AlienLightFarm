@@ -14,6 +14,8 @@ public class EndScreen : MonoBehaviour {
     public Button getRewardButton;
     public Button enterVkButton;
     public Button postVkButton;
+
+    public Button socialMenuButton;
     // Use this for initialization
 	void Awake () {
         library = GameObject.FindObjectOfType<Library>();
@@ -74,9 +76,10 @@ public class EndScreen : MonoBehaviour {
     {
         UpdateScore();
         ShowAd();
-        ShowGetRewardButton();
-        ShowEnterInVk();
-        ShowPostVk();
+       // ShowGetRewardButton();
+        //ShowEnterInVk();
+        //ShowPostVk();
+        ShowSocialMenuButton();
     }
 
     public void ShowEnterInVk()
@@ -105,15 +108,19 @@ public class EndScreen : MonoBehaviour {
         videoAdButton.gameObject.SetActive(false);
     }
 
-    public void HideEnterVkButton()
+ 
+    public void ShowSocialMenuButton()
     {
-        enterVkButton.gameObject.SetActive(false);
+        if (library.vkController.IsShowVkGroupButton() || library.vkController.IsShowVkPostButton())
+            socialMenuButton.gameObject.SetActive(true);
+        else
+            socialMenuButton.gameObject.SetActive(false);
     }
 
-    public void HidePostVkButton()
-    {
-        postVkButton.gameObject.SetActive(false);
-    }
 
+    public void HideSocialMenuButton()
+    {
+        socialMenuButton.gameObject.SetActive(false);
+    }
 
 }

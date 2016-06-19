@@ -13,7 +13,7 @@ public class BgController : MonoBehaviour {
 
     public void SetBackground(int num)
     {
-        GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/Backgrounds/" + num);
+        GetComponent<RawImage>().texture = Resources.Load<Texture>("Images/Backgrounds/" + num);
     }
 	
 	// Update is called once per frame

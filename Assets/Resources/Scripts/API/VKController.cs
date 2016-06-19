@@ -55,12 +55,21 @@ public class VKController : MonoBehaviour
 
     public void InitializeGroupRequest()
     {
-        library.screenController.endScreen.GetComponent<EndScreen>().HideEnterVkButton();
+        library.screenController.HideSocialScreen();
+        library.screenController.endScreen.GetComponent<EndScreen>().HideSocialMenuButton();
 
         vkapi.LoggedIn += EnterInGroupVk;
         Login();
     }
 
+    public void InitializeWallPost()
+    {
+        library.screenController.HideSocialScreen();
+        library.screenController.endScreen.GetComponent<EndScreen>().HideSocialMenuButton();
+
+        vkapi.LoggedIn += InviteFriendsWallPostRequest;
+        Login();
+    }
 
 
     public void JoinGroupRequest()
@@ -118,7 +127,8 @@ public class VKController : MonoBehaviour
         /*
         if (!Logged)
         {*/
-        library.screenController.endScreen.GetComponent<EndScreen>().HidePostVkButton();
+        library.screenController.HideSocialScreen();
+        library.screenController.endScreen.GetComponent<EndScreen>().HideSocialMenuButton();
 
         vkapi.LoggedIn += InviteFriendsWallPostRequest;
         Login();

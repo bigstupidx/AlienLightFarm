@@ -13,6 +13,7 @@ public class MarketScreen : MonoBehaviour {
         library = GameObject.FindObjectOfType<Library>();
 	}
 
+
     public void OnOpenScreen()
     {
         for (int i = 0; i < marketElements.Length; i++)
@@ -53,9 +54,21 @@ public class MarketScreen : MonoBehaviour {
 
     public void OnSelectClick(MarketElement currentMarketElement)
     {
-        SelectCurrentElement(currentMarketElement);
         if (currentMarketElement.IsOpen())
-            library.screenController.HideMarketScreen();
+            SelectCurrentElement(currentMarketElement);
+        else
+        {
+            if(library.money.GetMoney() >= GameplayConstants.PurchasePrice/*если хватает бабосов, то открываем, выбирраем, снимаем бабосы*/)
+            {
+                PreferencesSaver.SetOpenElementInMarket(currentMarketElement.num);
+                currentMarketElement.Open();
+                SelectCurrentElement(currentMarketElement);
+                library.money.AddMoney(-GameplayConstants.PurchasePrice);
+                library.money.SaveMoney();
+            }
+
+        }
+//            library.screenController.HideMarketScreen();
 
     }
 

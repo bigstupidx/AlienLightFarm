@@ -68,10 +68,18 @@ public class BlackHole : Building
         {
             Clickable currentClickable = alien.GetCurrentClickable();
             Clickable randomClickable = library.map.GetRandomFreeCellForBorn(currentClickable);
+
+
             alien.transform.SetParent(library.aliens.transform, true);
             alien.GetComponent<RectTransform>().anchoredPosition = randomClickable.GetRandomPositionInClickable();
             alien.transform.localScale = new Vector3(1, 1, 1);
             alien.SetUnBlackHole();
+
+
+            GameObject goPsSpawn = Instantiate(psSpawn.gameObject) as GameObject;
+            goPsSpawn.transform.SetParent(transform, true);
+            goPsSpawn.transform.position = alien.transform.position;
+            goPsSpawn.GetComponent<ParticleSystem>().Play();
 
             // library.aliens.GetComponent<AlienController>().RemoveFreeAlien(alien);
         }

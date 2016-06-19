@@ -15,12 +15,19 @@ public class Fountain : Building
     Color startColor;
 
     public RawImage health;
+    public RawImage inHealth;
     public RawImage bg;
 
     const float maxWidth = 95f;
     float fountainLife = GameplayConstants.FountainMinLife;
     float fountainCurrentMaxLife = GameplayConstants.FountainMinLife;
     float deltaHealth = maxWidth / GameplayConstants.FountainMaxLife;
+
+    void Start()
+    {
+        inHealth.GetComponent<RectTransform>().sizeDelta = new Vector2(maxWidth, inHealth.GetComponent<RectTransform>().sizeDelta.y);
+    }
+
     void Update()
     {
         UpdateColor();

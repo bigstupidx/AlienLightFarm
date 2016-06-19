@@ -4,7 +4,6 @@ using UnityEngine.EventSystems;
 
 public class Library : MonoBehaviour {
 
-    public EventSystem eventSystem;
     public GameObject aliens;
     public Map map;
     public Canvas canvas;
@@ -24,5 +23,12 @@ public class Library : MonoBehaviour {
 
     public VKController vkController;
 
+    
+
     public Camera cam;
+
+    public AudioController audioController;
+    public SoundButton soundButton;
+
+    public TutorialController tutorialController;
 }

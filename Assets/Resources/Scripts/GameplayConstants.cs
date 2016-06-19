@@ -3,10 +3,10 @@ using System.Collections;
 
 public class GameplayConstants {
 
-    public const float AlienFullLiveTime = 12f;
+    public const float AlienFullLiveTime = 10f;
     public const float AlienMaxWaitTime = 3f;
     public const float AlienMinWaitTime = 1f;
-    public const float AlienNormalSpeed = 30f;
+    public const float AlienNormalSpeed = 40f;
     public const float AlienHungrySpeed = 70f;
 
     public static int[] AlienClampDistance = { 5, 10, 20, 34 };
@@ -19,12 +19,12 @@ public class GameplayConstants {
 
 
     // Скорость появления алиенов
-    public const float AlienBornTime = 2f;
-    public const float AlienBorningDelay = 1.4f;
+    public const float AlienBornTime = 0.3f;
+    public const float AlienBorningDelay = 4f;
 
 
 
-    public static float[] FountainButtonReloadTime = {2.5f,3.5f,4.5f,5.5f};
+    public static float[] FountainButtonReloadTime = {3.2f,3.6f,4f,4.4f};
     public const float SafeCupolButtonReloadTime = 3f;
     public static float HealingButtonReloadTime = 10f;
     //public static float PusherButtonReloadTime = 5f;
@@ -36,23 +36,23 @@ public class GameplayConstants {
 
 
 
-    public const float FountainMaxLife = 210f;
+    public const float FountainMaxLife = 80f;
     public const float FountainMinLife = 10f;
 
-    public const float FountainGrowCoef = 1.7f;
-    public const float FountainRecoveryCoef = 3.2f;
+    public const float FountainGrowCoef = 1.2f;
+    public const float FountainRecoveryCoef = 1.9f;
 
     public const float WallLifeTime = 7f;
     public const float SafeCupolLifeTime = 5f;
 
     public const float BlackHoleClosedSpeed = 1f;
 
-    public const float AlienCoefRateFountain = 7f;
+    public const float AlienCoefRateFountain = 6f;
     // public const float FountainCoefRestitution = 8f;
 
     public const int MaxAgro = 100;
     //  public static float[] AgroCoef = {60,40,25,20,15};
-    public static float AgroCoef = 20f;
+    public static float AgroCoef = 100f;
   //  public static int[] AgroCoefAlienCountTreshold = { 0, 10, 15, 20, 25 };
     public const float RecoveryAgroCoef = 7.5f;
 
@@ -66,7 +66,7 @@ public class GameplayConstants {
     public const int PusherTreshold = 20;
     public const int HealingTreshold = 30;
     */
-    public static int[] AliensTresholds = { 0, 0, 0, 0 };//{ 0, 7, 14, 21 };
+    public static int[] AliensTresholds = /*{ 0, 0, 0, 0 };*/ { 0, 5, 12, 18 };
 
     public const int PusherRange = 3;
     public const float PusherExpansionSpeed = 5f;
@@ -83,7 +83,7 @@ public class GameplayConstants {
 
     public static int[] OrderOpeningReward = {0, 1 };
 
-    public const int MoneyDevider = 3;
+    public const int MoneyDevider = 2;
 
     public const string marketURL = "https://play.google.com/store/apps/details?id=com.sveta.alienescape";
 }

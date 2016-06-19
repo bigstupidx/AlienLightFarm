@@ -11,6 +11,7 @@ public class ScreenController : MonoBehaviour {
     public GameObject endScreen;
     public GameObject marketScreen;
     public GameObject rewardScreen;
+    public GameObject socialScreen;
 
     GameObject currentScreen;
 
@@ -36,6 +37,7 @@ public class ScreenController : MonoBehaviour {
         startScreen.SetActive(false);
         endScreen.SetActive(false);
         rewardScreen.SetActive(false);
+        socialScreen.SetActive(false);
     }
 
     public void ShowStartScreen()
@@ -79,6 +81,17 @@ public class ScreenController : MonoBehaviour {
         marketScreen.SetActive(false);
     }
 
+    public void ShowSocialScreen()
+    {
+        socialScreen.SetActive(true);
+        socialScreen.GetComponent<SocialScreen>().OnOpenScreen();
+    }
+
+    public void HideSocialScreen()
+    {
+        socialScreen.SetActive(false);
+    }
+
     public void ShowRewardScreen()
     {
         rewardScreen.SetActive(true);
@@ -106,7 +119,7 @@ public class ScreenController : MonoBehaviour {
         gameScreen.GetComponent<GameController>().UpdateBackground();
 
         currentScreen = gameScreen;
-
+        /*
         iTween.ValueTo(gameObject,
               iTween.Hash("from", 1,
                "to", 0,
@@ -119,12 +132,31 @@ public class ScreenController : MonoBehaviour {
                ),
                "oncomplete", "OnCompleteHideStartScreen",
                "oncompletetarget", gameObject
+               ));*/
+        gameScreen.GetComponent<CanvasGroup>().alpha = 0;
+        library.uiButtonsController.gameObject.SetActive(true);
+
+        iTween.ValueTo(gameObject,
+              iTween.Hash("from", 0,
+               "to", 1,
+               "time", 0.5f,
+               "delay", 0.2f,
+               "onupdate", (System.Action<object>)(newVal =>
+               {
+                   gameScreen.GetComponent<CanvasGroup>().alpha = (float)newVal;
+
+               }
+               ),
+               "oncomplete", "OnCompleteHideStartScreen",
+               "oncompletetarget", gameObject
                ));
+
+
     }
 
     void OnCompleteHideStartScreen()
     {
-        startScreen.GetComponent<CanvasGroup>().alpha = 1;
+ //       startScreen.GetComponent<CanvasGroup>().alpha = 1;
 
         startScreen.SetActive(false);
 
@@ -140,9 +172,9 @@ public class ScreenController : MonoBehaviour {
 
 
         currentScreen = endScreen;
-        endScreen.GetComponent<CanvasGroup>().alpha = (float)0;
+        endScreen.GetComponent<CanvasGroup>().alpha = (float)1;
 
-
+        /*
         iTween.ValueTo(gameObject,
               iTween.Hash("from", 0,
                "to", 1,
@@ -155,12 +187,29 @@ public class ScreenController : MonoBehaviour {
                ),
                "oncomplete", "OnCompleteShowEndScreen",
                "oncompletetarget", gameObject
+               ));*/
+
+
+        iTween.ValueTo(gameObject,
+              iTween.Hash("from", 1,
+               "to", 0,
+               "time", 0.5f,
+               "onupdate", (System.Action<object>)(newVal =>
+               {
+                   gameScreen.GetComponent<CanvasGroup>().alpha = (float)newVal;
+
+               }
+               ),
+                              "oncomplete", "OnCompleteShowEndScreen",
+
+               "oncompletetarget", gameObject
                ));
     }
 
     void OnCompleteShowEndScreen()
     {
         library.gameController.ToDefault();
+        gameScreen.GetComponent<CanvasGroup>().alpha = 1;
         gameScreen.SetActive(false);
     }
 

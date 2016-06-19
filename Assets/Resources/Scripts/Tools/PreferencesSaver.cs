@@ -94,11 +94,48 @@ public class PreferencesSaver : MonoBehaviour
         SavePref("NumReward", (GetNumReward() + 1)+"");
     }
 
+    public static bool GetSound()
+    {
+        string val = GetPref("EnterInVkGround", true + "");
+        return bool.Parse(val);
+    }
+
+    public static void SetSound(bool val)
+    {
+        SavePref("Sound", val + "");
+
+    }
+
+    public static void AcceptTutorial1()
+    {
+        SavePref("Tutorial1", true + "");
+    }
+
+
+    public static bool IsAcceptTutorial1()
+    {
+        string val = GetPref("Tutorial1", false + "");
+        return bool.Parse(val);
+    }
+
+    public static void AcceptTutorial2()
+    {
+        SavePref("Tutorial2", true + "");
+    }
+
+    public static bool IsAcceptTutorial2()
+    {
+        string val = GetPref("Tutorial2", false + "");
+        return bool.Parse(val);
+    }
+
     private static void SavePref(string key, string val)
     {
         SecurePlayerPrefs.SetString(key, val, pass);
         PlayerPrefs.Save();
     }
+
+  
 
     private static string GetPref(string key, string defaultValue)
     {

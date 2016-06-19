@@ -34,7 +34,7 @@ public class AdController : MonoBehaviour,IRewardedVideoAdListener
 
     public bool CanShowVideoAd()
     {
-        if (iterator % 4 == 2 && Appodeal.isLoaded(Appodeal.REWARDED_VIDEO))
+        if (iterator % 3 == 1 && Appodeal.isLoaded(Appodeal.REWARDED_VIDEO))
             return true; 
         else
             return false;
@@ -42,7 +42,7 @@ public class AdController : MonoBehaviour,IRewardedVideoAdListener
 
     public bool CanShowStaticAd()
     {
-        if (iterator % 4 == 3)
+        if (iterator % 3 == 2)
             return true;
         else
             return false;
@@ -91,5 +91,6 @@ public class AdController : MonoBehaviour,IRewardedVideoAdListener
         
 
         Debug.Log("onRewardedVideoClosed");
+        
     }
 }

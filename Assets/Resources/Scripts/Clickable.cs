@@ -147,6 +147,8 @@ public class Clickable : MonoBehaviour {
         //  MoveAllAlienInClickable();
         currentBlackHole = Build(BuildingType.BlackHole).GetComponent<Building>();
 
+        library.audioController.BlackHole();
+
         SetAliensToCurrentBlackHole();
 
         return currentBlackHole.gameObject;
@@ -170,6 +172,8 @@ public class Clickable : MonoBehaviour {
 
         SetAliensToCurrentHealing();
 
+        library.audioController.Heal();
+
         return currentHealing.gameObject;
     }
 
@@ -192,6 +196,8 @@ public class Clickable : MonoBehaviour {
 
         go.transform.SetParent(parentTransform, false);
         go.GetComponent<RectTransform>().position = GetComponent<RectTransform>().position;
+
+        library.audioController.Build();
 
         return go;   
     }
@@ -241,7 +247,7 @@ public class Clickable : MonoBehaviour {
 
     public bool CanBuildBlackHole()
     {
-        return IsFree();
+        return !IsCupol() && !IsBlackHole() && !IsPusher();
     }
 
     public bool CanBuildPusher()
@@ -532,5 +538,16 @@ public class Clickable : MonoBehaviour {
    //     Debug.Log(library.canvas.scaleFactor);
 
         return rt.anchoredPosition +  new Vector2(Random.Range(-treshold, treshold),0);
+    }
+
+    public void Lock()
+    {
+        GetComponent<Button>().interactable = false;
+    }
+
+
+    public void UnLock()
+    {
+        GetComponent<Button>().interactable = true;
     }
 }

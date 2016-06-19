@@ -7,6 +7,9 @@ public class AlienController : MonoBehaviour {
     List<Alien> borningAliens = new List<Alien>();
     List<Alien> aliens = new List<Alien>();
 
+    public GameObject particleDeathPrefab;
+    public GameObject particleBornPrefab;
+
 
     float bornDelay;
     Library library;
@@ -24,8 +27,11 @@ public class AlienController : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-        BornAlien();
-        
+        if (library.gameController.IsStartGame())
+        {
+            BornAlien();
+        }
+
         int currentIterator = 0;
         int startNum = iterator;
         while(currentIterator <= 20)
@@ -84,7 +90,7 @@ public class AlienController : MonoBehaviour {
 
     void BornAlien()
     {
-        
+        /*
         if (!startBorningWasUsed)
         {
             startBorningWasUsed = true;
@@ -94,12 +100,17 @@ public class AlienController : MonoBehaviour {
             
             SetBornDelay();
         }
-        else if (borningAliens.Count < 1 && IsBornDelay())
+        else*/
+        if (borningAliens.Count < 1 && IsBornDelay())
         {
-       /*     
-              if(io == 0)
-              {*/
-            CreateAlien();
+
+            
+                       
+            Alien alien = CreateAlien();
+
+            if (io == 0)
+                StartCoroutine(ShowTutorial1(alien.GetCurrentClickable()));
+
             // foreach(Clickable cl in library.map.GetWayToClickable(library.map.GetCell(9), library.map.GetCell(28)))
             //     {
             //        Debug.Log(cl.num);
@@ -110,6 +121,13 @@ public class AlienController : MonoBehaviour {
 
         UpdateBorningDelay();
     }
+
+    IEnumerator ShowTutorial1(Clickable clickable)
+    {
+        yield return new WaitForSeconds(3);
+        library.tutorialController.ShowTutorial1(clickable);
+    }
+
 
     void UpdateBorningDelay()
     {
@@ -128,15 +146,20 @@ public class AlienController : MonoBehaviour {
         else return true;
     }
 
-    void CreateAlien()
+    Alien CreateAlien()
     {
         Clickable clickable = /*library.map.GetCell(14);*/library.map.GetRandomFreeCellForBorn();
-
-        if(clickable != null)
+        Alien alien = null;
+        if (clickable != null)
         {
-            Alien alien = clickable.CreateAlien();
+            alien = clickable.CreateAlien();
+
+            CreateParticle(particleBornPrefab, alien.fChild.transform.position);
+            library.audioController.Born();
             AddBorningAlien(alien);
         }
+
+        return alien;
     }
 
     void AlienMoveTo(Alien alien)
@@ -246,16 +269,32 @@ public class AlienController : MonoBehaviour {
     
     public void RemoveAlien(Alien alien)
     {
-        RemoveFreeAlien(alien);
+        borningAliens.Remove(alien);
+        aliens.Remove(alien);
+
+        CreateParticle(particleDeathPrefab, alien.childAnim.transform.position);
+        library.audioController.Death();
+
+        Destroy(alien.gameObject);
+        library.alienCount.SetCount(aliens.Count);
         library.gameController.DeathAlien();
     }
 
-    public void RemoveFreeAlien(Alien alien)
+    void CreateParticle(GameObject particle, Vector3 position)
     {
-        borningAliens.Remove(alien);
-        aliens.Remove(alien);
-        Destroy(alien.gameObject);
-        library.alienCount.SetCount(aliens.Count);
+        GameObject goParticle = Instantiate(particle) as GameObject;
+        goParticle.transform.SetParent(library.buildings.particles,true);
+        goParticle.transform.position = position;
+        goParticle.transform.position += new Vector3(0, 0, 100);
+        goParticle.GetComponent<ParticleSystem>().Play();
+        StartCoroutine(DeleteParticle(goParticle));
+     }
+
+    IEnumerator DeleteParticle(GameObject go)
+    {
+        yield return new WaitForSeconds(2f);
+
+        Destroy(go);
     }
 
     public void MoveAllAlienInClickable(Clickable clickable)

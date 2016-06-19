@@ -8,11 +8,45 @@ public class Map : MonoBehaviour {
 
     bool lightIsOn;
 
+    public CanvasGroup canvasGroup;
+    
     void Awake()
     {
         library = GameObject.FindObjectOfType<Library>();
     }
 
+    void Start()
+    {
+       // HideLight();
+    }
+
+    void ShowLight()
+    {
+        iTween.ValueTo(gameObject,
+        iTween.Hash("from", 0,
+         "to", 1,
+          "time", 1f,
+         "onupdate", (System.Action<object>)(newVal => canvasGroup.alpha =  (float)newVal),
+         "oncomplete", "HideLight",
+         "easetype", iTween.EaseType.easeOutQuad,
+         "oncompletetarget", gameObject
+        )
+        );
+    }
+
+    void HideLight()
+    {
+        iTween.ValueTo(gameObject,
+        iTween.Hash("from", 1,
+         "to", 0,
+          "time", 1f,
+         "onupdate", (System.Action<object>)(newVal => canvasGroup.alpha = (float)newVal),
+         "oncomplete", "ShowLight",
+         "easetype", iTween.EaseType.easeInQuad,
+         "oncompletetarget", gameObject
+         )
+        );
+    }
 
     public Clickable GetRandomFreeCellForBorn(Clickable excetions)
     {
@@ -456,6 +490,10 @@ public bool IsExtremeForWallToRight(Clickable temp)
         foreach (Clickable cl in cells)
             cl.OnHighlight(buildingType);
 
+        canvasGroup.alpha = 0;
+
+        ShowLight();
+
     }
 
     public void OffHighlightAllActiveClickable()
@@ -463,6 +501,9 @@ public bool IsExtremeForWallToRight(Clickable temp)
         lightIsOn = false;
         foreach (Clickable cl in cells)
             cl.OffHighlight();
+
+
+        iTween.Stop(gameObject);
 
     }
 
@@ -493,5 +534,23 @@ public bool IsExtremeForWallToRight(Clickable temp)
             floor = 2;
 
         return floor;
+    }
+
+    public void LockAllClickable()
+    {
+        foreach (Clickable cell in cells)
+            cell.Lock();
+    }
+
+    public void UnLockAllClickable()
+    {
+        foreach (Clickable cell in cells)
+            cell.UnLock();
+    }
+
+
+    public void UnLockClickable(Clickable clickable)
+    {
+        clickable.UnLock();
     }
 }

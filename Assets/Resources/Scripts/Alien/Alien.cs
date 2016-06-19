@@ -77,8 +77,6 @@ public class Alien : MonoBehaviour {
 
     bool landWasChanged;
 
-    Clickable currentClickableExpulsion;
-
     bool pauseInCupol;
     bool pauseInBlackHole;
 
@@ -88,7 +86,7 @@ public class Alien : MonoBehaviour {
 
         library = GameObject.FindObjectOfType<Library>();
 
-        startColor = new Color(0,  Random.Range(0.8f, 1f), 1);
+        startColor = new Color(0, Random.Range(0.8f, 1f), 1);
 
     }
 
@@ -101,8 +99,8 @@ public class Alien : MonoBehaviour {
         {
             if (liveTime == 0)
             {
-                     currentLiveState = AlienLiveState.Die;
-                   return;
+                currentLiveState = AlienLiveState.Die;
+                return;
             }
 
             if (landWasChanged && currentMovementState != AlienMovementState.Charged && currentMovementState != AlienMovementState.Expulsion && currentMovementState != AlienMovementState.Jump)
@@ -116,7 +114,7 @@ public class Alien : MonoBehaviour {
                 liveTime -= Time.deltaTime;
             liveTime = Mathf.Max(liveTime, 0);
 
-            if(currentMovementState == AlienMovementState.MoveToPoint && IsVeryHungry() && currentClickable.IsFountain())
+            if (currentMovementState == AlienMovementState.MoveToPoint && IsVeryHungry() && currentClickable.IsFountain())
             {
                 SetMovementState(AlienMovementState.Charged);
                 currentFountainTarget = null;
@@ -219,6 +217,9 @@ public class Alien : MonoBehaviour {
     {
         Clickable tempClickable = library.map.GetCurrentClickable(transform.GetComponent<RectTransform>().anchoredPosition);
 
+        if (pauseInBlackHole || pauseInCupol || currentMovementState.Equals(AlienMovementState.Jump))
+            return;
+
         if (tempClickable != null)
         {
             currentClickable = tempClickable;
@@ -257,10 +258,19 @@ public class Alien : MonoBehaviour {
         currentClickable = clickable;
         currentFloor = clickable.GetFloor();
         StartCoroutine(BornAlienCoroutine(clickable));
+
+
+        //BornAlienCoroutine(clickable);
+      //  fChild.transform.localScale = new Vector3(1, 1, 1);
+
+   //     currentLiveState = AlienLiveState.Alive;
+
+      //  clickable.AlienWasBorning();
     }
 
     IEnumerator BornAlienCoroutine(Clickable clickable)
     {
+        
         while (currentLiveState.Equals(AlienLiveState.Born))
         {
             while (pauseInCupol || pauseInBlackHole)
@@ -269,10 +279,12 @@ public class Alien : MonoBehaviour {
             bornTime += Time.deltaTime;
 
             float currentScale = bornTime / GameplayConstants.AlienBornTime;
+            
+        fChild.transform.localScale = new Vector3(currentScale, currentScale, currentScale);
 
-            fChild.transform.localScale = new Vector3(currentScale, currentScale, currentScale);
 
-            if (bornTime > GameplayConstants.AlienBornTime)
+
+        if (bornTime > GameplayConstants.AlienBornTime)
             {
                 bornTime = GameplayConstants.AlienBornTime;
 
@@ -349,6 +361,7 @@ public class Alien : MonoBehaviour {
             (!currentMovementState.Equals(AlienMovementState.Jump) && !currentMovementState.Equals(AlienMovementState.Charged)))
         {
 
+            if(currentMovableCoroutine != null)
             StopCoroutine(currentMovableCoroutine);
 
             if (currentWaitCoroutine != null)
@@ -445,6 +458,8 @@ public class Alien : MonoBehaviour {
         
         SetMovementState(AlienMovementState.Jump, direction);
         readyToJump = false;
+
+        library.audioController.Jump();
 
         switch (direction)
         {
